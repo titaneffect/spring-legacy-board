@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="kr.or.oti.mapper.BoardMapper">
+
+	<select id="selectPage" resultType="kr.or.oti.domain.BoardVO">
+		SELECT
+            BNO,
+            TITLE,
+            CONTENT,
+            WRITER,
+            REGDATE,
+            MODDATE
+        FROM BOARD
+        
+        <where>
+        	<if test="keyword != null and keyword != ''">
+        		<choose>
+        			<when test='type == "T"'>
+        				TITLE LIKE '%' || #{keyword} || '%'
+        			</when>
+        			<when test='type == "W"'>
+        				WRITER LIKE '%' || #{keyword} || '%'
+        			</when>
+        			<when test='type == "C"'>
+        				CONTENT LIKE '%' || #{keyword} || '%'
+        			</when>
+        		</choose> 		
+        	</if>
+        </where>
+        
+        ORDER BY BNO DESC
+        OFFSET #{skip} ROWS
+        FETCH NEXT #{size} ROWS ONLY
+	</select>
+	
+	<select id="selectTotalCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM BOARD
+		
+		<where>
+        	<if test="keyword != null and keyword != ''">
+        		<choose>
+        			<when test='type == "T"'>
+        				TITLE LIKE '%' || #{keyword} || '%'
+        			</when>
+        			<when test='type == "W"'>
+        				WRITER LIKE '%' || #{keyword} || '%'
+        			</when>
+        			<when test='type == "C"'>
+        				CONTENT LIKE '%' || #{keyword} || '%'
+        			</when>
+        		</choose> 
+        	</if>
+        </where>
+	</select>
+	
+	<select id="selectOne" resultType="kr.or.oti.domain.BoardVO">
+		SELECT
+			BNO,
+			TITLE,
+			CONTENT,
+			WRITER,
+			REGDATE,
+			MODDATE
+		FROM BOARD
+		WHERE BNO = #{bno}
+	</select>
+	
+	<insert id="insertOne">
+		INSERT INTO BOARD(
+			BNO,
+			TITLE,
+			CONTENT,
+			WRITER
+		)
+		VALUES (
+			SEQ_BOARD.NEXTVAL,
+			#{title},
+			#{content},
+			#{writer}
+		)
+	</insert>
+	
+	<update id="updateOne">
+		UPDATE BOARD
+		SET 
+			TITLE = #{title},
+			CONTENT = #{content},
+			MODDATE = SYSDATE
+		WHERE BNO = #{bno}
+	</update>
+	
+	<delete id="deleteOne">
+		DELETE FROM BOARD
+		WHERE BNO = #{bno}
+	</delete>
+	
+</mapper>

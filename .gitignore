@@ -1,0 +1,23 @@
+# Maven build
+/target/
+
+# Eclipse / STS
+/.settings/
+/.classpath
+/.project
+/.springBeans
+/.factorypath
+
+# Project temporary files
+/output/
+/tmp/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local DB credentials
+/src/main/resources/db.properties

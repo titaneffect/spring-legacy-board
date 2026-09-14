@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.oti.mapper.MemberMapper">
+
+	<resultMap id="memberMap" type="kr.or.oti.domain.MemberVO">
+		<id property="username" column="USERNAME" />
+		
+		<result property="password" column="PASSWORD" />
+		<result property="enabled" column="ENABLED" />
+		<result property="regDate" column="REGDATE" />
+		
+		<collection property="authList" ofType="kr.or.oti.domain.MemberAuthVO"
+			notNullColumn="AUTHORITY">
+			<result property="username" column="USERNAME" />
+			<result property="authority" column="AUTHORITY" />
+		</collection>
+	</resultMap>
+	
+	<select id="selectOne" resultMap="memberMap">
+		SELECT
+			M.USERNAME,
+			M.PASSWORD,
+			M.ENABLED,
+			M.REGDATE,
+			A.AUTHORITY
+		FROM MEMBER M LEFT JOIN MEMBER_AUTH A ON M.USERNAME = A.USERNAME
+		WHERE M.USERNAME = #{username}
+	</select>
+	
+	<select id="selectUsernameCount" resultType="int">
+		SELECT COUNT(*)
+		FROM MEMBER
+		WHERE USERNAME = #{username}
+	</select>
+	
+	<insert id="insertOne">
+		INSERT INTO MEMBER
+		(
+			USERNAME,
+			PASSWORD
+		)
+		VALUES
+		(
+			#{username},
+			#{password}
+		)
+	</insert>
+	
+	<insert id="insertAuthority">
+		INSERT INTO MEMBER_AUTH
+		(
+			USERNAME,
+			AUTHORITY
+		)
+		VALUES
+		(
+			#{username},
+			#{authority}
+		)
+	</insert>
+</mapper>
