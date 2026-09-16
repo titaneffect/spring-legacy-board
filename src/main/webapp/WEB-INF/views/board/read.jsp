@@ -78,10 +78,11 @@
 		<c:forEach var="attach" items="${attachList}">
 			<div>
 				${attach.fileName}
-				<%-- <img src="${pageContext.request.contextPath}/attachments/${attach.ano}/view"
+				<c:if test="${fn:startsWith(attach.contentType, 'image/')}">
+					<img src="${pageContext.request.contextPath}/attachments/${attach.ano}/view"
 					alt="${attach.fileName}"
 					width="150">
-					 --%>
+				</c:if>
 			</div>
 		</c:forEach>
 	</c:if>

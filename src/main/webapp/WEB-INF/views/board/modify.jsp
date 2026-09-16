@@ -12,7 +12,7 @@
 
 	<jsp:include page="/WEB-INF/views/common/header.jsp"/>
 
-	<form method="post" enctype="multipart/form-data"
+	<form id="modifyForm" method="post" enctype="multipart/form-data"
 		action="${pageContext.request.contextPath}/board/modify">
 		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 		<input type="hidden" name="bno" value="${board.bno}">
@@ -37,12 +37,18 @@
 	<h3>첨부파일</h3>
 	<c:if test="${not empty attachList}">
 		<c:forEach var="attach" items="${attachList}">
-			<div>
-				${attach.fileName}
-				<%-- <img src="${pageContext.request.contextPath}/attachments/${attach.ano}/view"
+			<div class="existing-attach" data-ano="${attach.ano}">
+				<span>${attach.fileName}</span>
+				<c:if test="${fn:startsWith(attach.contentType, 'image/')}">
+					<img src="${pageContext.request.contextPath}/attachments/${attach.ano}/view"
 					alt="${attach.fileName}"
 				 	width="150">
-				 	--%>
+				</c:if>
+				
+				<button type="button" class="attach-remove-button">
+					X
+				</button>
+				 
 			</div>
 		</c:forEach>
 	</c:if>
@@ -58,5 +64,27 @@
 	<a href="${pageContext.request.contextPath}/board/read?bno=${board.bno}&${pageRequest.link}">
 		취소
 	</a>
+	
+	<script>
+		const modifyForm = document.querySelector('#modifyForm');
+		const removeButtons = document.querySelectorAll('.attach-remove-button');
+		
+		removeButtons.forEach(button => {
+			button.addEventListener('click', function(){
+				const attachItem = button.closest('.existing-attach');
+				const ano = attachItem.dataset.ano;
+				const hiddenInput = document.createElement('input');
+				
+				hiddenInput.type = 'hidden';
+				hiddenInput.name = 'deleteAnoList';
+				hiddenInput.value = ano;
+				
+				modifyForm.appendChild(hiddenInput);
+				
+				// 화면에서만 숨긴다
+				attachItem.style.display = 'none';
+			});
+		});
+	</script>
 </body>
 </html>

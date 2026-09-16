@@ -72,6 +72,10 @@
 	</select>
 	
 	<insert id="insertOne">
+		<selectKey	keyProperty="bno" resultType="long" order="BEFORE">
+			SELECT SEQ_BOARD.NEXTVAL
+			FROM DUAL
+		</selectKey>
 		INSERT INTO BOARD(
 			BNO,
 			TITLE,
@@ -79,7 +83,7 @@
 			WRITER
 		)
 		VALUES (
-			SEQ_BOARD.NEXTVAL,
+			#{bno},
 			#{title},
 			#{content},
 			#{writer}

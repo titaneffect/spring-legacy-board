@@ -2,6 +2,8 @@ package kr.or.oti.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import kr.or.oti.dto.BoardAttachDTO;
 
 public interface BoardAttachService {
@@ -10,6 +12,10 @@ public interface BoardAttachService {
 	
 	BoardAttachDTO get(Long ano);
 	
-	//void upload(BoardAttachDTO boardAttachDTO);
+	void register(Long bno, MultipartFile uploadFile);
+	
+	void remove(Long bno, Long ano);
+	
+	void removeAll(Long bno);
 
 }

@@ -60,4 +60,9 @@
 			#{contentType}
 		)
 	</insert>
+	
+	<delete id="deleteOne">
+		DELETE FROM BOARD_ATTACH
+		WHERE ANO = #{ano}
+	</delete>
 </mapper>

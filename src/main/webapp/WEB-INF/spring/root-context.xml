@@ -16,7 +16,9 @@
 	<context:component-scan base-package="kr.or.oti.service"/>
 	<context:component-scan base-package="kr.or.oti.security"/>
 	
-	<context:property-placeholder location="classpath:db.properties"/>
+	<context:property-placeholder location="
+		classpath:db.properties,
+		classpath:upload.properties"/>
 
 	<!-- 1. Oracle DataSource -->
 	<bean id="dataSource"

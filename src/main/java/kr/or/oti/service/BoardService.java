@@ -7,7 +7,7 @@ import kr.or.oti.dto.PageResponseDTO;
 public interface BoardService {
 	PageResponseDTO<BoardDTO> getList(PageRequestDTO pageRequestDTO);
 	BoardDTO get(Long bno); 
-	void register(BoardDTO boardDTO);
+	Long register(BoardDTO boardDTO);
 	void modify(BoardDTO boardDTO);
 	void remove(Long bno);
 }

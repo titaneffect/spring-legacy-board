@@ -21,6 +21,7 @@ public class BoardServiceImpl implements BoardService {
 
 	private final BoardMapper boardMapper;
 	private final ReplyMapper replyMapper;
+	private final BoardAttachService boardAttachService;
 	
 	@Override
 	public PageResponseDTO<BoardDTO> getList(PageRequestDTO pageRequestDTO){
@@ -46,13 +47,15 @@ public class BoardServiceImpl implements BoardService {
 	}
 	
 	@Override
-	public void register(BoardDTO boardDTO) {
+	public Long register(BoardDTO boardDTO) {
 		BoardVO boardVO = DTOtoVO(boardDTO);
 		int result = boardMapper.insertOne(boardVO);
 		
 		if(result == 0) {
-			throw new BoardNotFoundException(boardDTO.getBno());
+			throw new IllegalStateException("게시글 등록에 실패했습니다.");
 		}
+		
+		return boardVO.getBno();
 	}
 	
 	@Override
@@ -68,8 +71,13 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	@Transactional
 	public void remove(Long bno) {
+		// 첨부파일 DB 정보와 실제 파일 삭제
+		boardAttachService.removeAll(bno);
+		
+		// 댓글 삭제
 		replyMapper.deleteAllByBno(bno);
 		
+		// 게시글 삭제
 		int result = boardMapper.deleteOne(bno);
 		
 		if(result == 0) {

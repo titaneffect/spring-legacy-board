@@ -11,4 +11,6 @@ public interface BoardAttachMapper {
 	BoardAttachVO selectOne(Long ano);
 	
 	void insertOne(BoardAttachVO boardAttachVO);
+	
+	int deleteOne(Long ano);
 }

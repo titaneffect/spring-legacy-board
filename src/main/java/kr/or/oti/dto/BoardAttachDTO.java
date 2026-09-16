@@ -12,7 +12,9 @@ public class BoardAttachDTO {
 	private Long ano;
 	private Long bno;
 	
+	private String uuid;
 	private String fileName;
+	private String uploadPath;
 	
 	private Long fileSize;
 	private String contentType;

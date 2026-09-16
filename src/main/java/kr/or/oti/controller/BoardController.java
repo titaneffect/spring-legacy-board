@@ -31,14 +31,14 @@ public class BoardController {
 
 	private final BoardService boardService;
 	private final BoardAttachService boardAttachService;
-	
+
 	@GetMapping("/list")
 	public String list(PageRequestDTO pageRequestDTO, Model model) {
 		model.addAttribute("pageResponse", boardService.getList(pageRequestDTO));
 		model.addAttribute("pageRequest", pageRequestDTO);
 		return "board/list";
 	}
-	
+
 	@GetMapping("/read")
 	public String read(Long bno, PageRequestDTO pageRequestDTO, Model model) {
 		model.addAttribute("board", boardService.get(bno));
@@ -46,45 +46,46 @@ public class BoardController {
 		model.addAttribute("attachList", boardAttachService.getList(bno));
 		return "board/read";
 	}
-	
+
 	@GetMapping("/register")
 	public String register() {
 		return "board/register";
 	}
-	
+
 	@PostMapping("/register")
 	public String register(@Valid @ModelAttribute("board") BoardDTO boardDTO,
 			BindingResult bindingResult, Model model, Principal principal,
-			@RequestParam(value = "uploadFiles", required = false)List<MultipartFile> uploadFiles) {
-		
-		if(bindingResult.hasErrors()) {
+			@RequestParam(value = "uploadFiles", required = false) List<MultipartFile> uploadFiles) {
+
+		if (bindingResult.hasErrors()) {
 			log.info("has errors....");
 			model.addAttribute("errors", bindingResult.getAllErrors());
 			return "board/register";
 		}
-		
-		if(uploadFiles != null) {
-			for(MultipartFile uploadFile : uploadFiles) {
-				if(uploadFile.isEmpty()) {
+
+		boardDTO.setWriter(principal.getName());
+		Long bno = boardService.register(boardDTO);
+
+		if (uploadFiles != null) {
+			for (MultipartFile uploadFile : uploadFiles) {
+				if (uploadFile.isEmpty()) {
 					continue;
 				}
-				
-				log.info("fileName: {}", uploadFile.getOriginalFilename());
+
+				boardAttachService.register(bno, uploadFile);
 			}
 		}
-		
-		boardDTO.setWriter(principal.getName());		
-		boardService.register(boardDTO);
-		return "redirect:/board/list";
+
+		return "redirect:/board/read?bno=" + bno;
 	}
-	
+
 	@GetMapping("/modify")
 	public String modify(Long bno, PageRequestDTO pageRequestDTO, Model model,
 			Principal principal) {
-		
+
 		BoardDTO boardDTO = boardService.get(bno);
-		
-		if(!principal.getName().equals(boardDTO.getWriter())) {
+
+		if (!principal.getName().equals(boardDTO.getWriter())) {
 			throw new AccessDeniedException("본인의 게시글만 수정할 수 있습니다.");
 		}
 		model.addAttribute("board", boardDTO);
@@ -97,53 +98,54 @@ public class BoardController {
 	public String modify(@Valid @ModelAttribute("board") BoardDTO boardDTO,
 			BindingResult bindingResult, PageRequestDTO pageRequestDTO,
 			Model model, Principal principal,
-			@RequestParam(value = "uploadFiles", required = false)List<MultipartFile> uploadFiles,
-			@RequestParam(value = "deleteAnoList", required = false)List<Long> deleteAnoList) { 
-		
-		 // 1. DB에 원본 게시글 조회
+			@RequestParam(value = "uploadFiles", required = false) List<MultipartFile> uploadFiles,
+			@RequestParam(value = "deleteAnoList", required = false) List<Long> deleteAnoList) {
+
+		// 1. DB에 원본 게시글 조회
 		BoardDTO savedBoard = boardService.get(boardDTO.getBno());
-		
+
 		// 2. 원래 작성자와 현재 로그인 사용자 비교
-		if(!principal.getName().equals(savedBoard.getWriter())) {
+		if (!principal.getName().equals(savedBoard.getWriter())) {
 			throw new AccessDeniedException("본인의 게시글만 수정할 수 있습니다.");
 		}
-	
+
 		// 3. 입력값 검증
-		if(bindingResult.hasErrors()) {
+		if (bindingResult.hasErrors()) {
 			log.info("has errors....");
 			model.addAttribute("errors", bindingResult.getAllErrors());
 			model.addAttribute("pageRequest", pageRequestDTO);
 			model.addAttribute("attachList", boardAttachService.getList(boardDTO.getBno()));
 			return "board/modify";
 		}
-		
+
 		// 4. 작성자가 맞을 때만 수정
-		if(uploadFiles != null) {
-			for(MultipartFile uploadFile : uploadFiles) {
-				if(uploadFile.isEmpty()) {
+		boardService.modify(boardDTO);
+
+		if (uploadFiles != null) {
+			for (MultipartFile uploadFile : uploadFiles) {
+				if (uploadFile.isEmpty()) {
 					continue;
 				}
-				
-				log.info("fileName: {}", uploadFile.getOriginalFilename());
+
+				boardAttachService.register(boardDTO.getBno(), uploadFile);
 			}
 		}
-		
-		if(deleteAnoList != null) {
+
+		if(deleteAnoList != null) { 
 			for(Long ano : deleteAnoList) {
-				log.info("삭제할 첨부파일 번호: {}", ano);
-			}
+				boardAttachService.remove(boardDTO.getBno(), ano);
+			} 
 		}
-		
-		boardService.modify(boardDTO);
-		return "redirect:/board/read?bno=" + boardDTO.getBno()
-			+ "&" + pageRequestDTO.getLink();
+		 
+
+		return "redirect:/board/read?bno=" + boardDTO.getBno() + "&" + pageRequestDTO.getLink();
 	}
-	
+
 	@PostMapping("/remove")
 	public String remove(Long bno, Principal principal) {
 		BoardDTO savedBoard = boardService.get(bno);
-		
-		if(!principal.getName().equals(savedBoard.getWriter())) {
+
+		if (!principal.getName().equals(savedBoard.getWriter())) {
 			throw new AccessDeniedException("본인의 게시글만 삭제할 수 있습니다.");
 		}
 		boardService.remove(bno);
