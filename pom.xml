@@ -154,6 +154,20 @@
 			<artifactId>spring-security-config</artifactId>
 			<version>${org.springframework-security-version}</version>
 		</dependency>
+
+		<!-- Java 객체를 JSON으로 변환 -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.15.4</version>
+		</dependency>
+
+		<!-- LocalDateTime JSON 변환 -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+			<version>2.15.4</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

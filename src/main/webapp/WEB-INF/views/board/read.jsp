@@ -5,8 +5,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>${board.title}</title>
+	<meta charset="UTF-8">
+	<title>${board.title}</title>
+	<style>
+		.reply-item{
+			margin-bottom: 20px;
+		}
+	</style>
 </head>
 <body>
     <c:if test="${empty pageContext.request.userPrincipal}">
@@ -50,7 +55,7 @@
 
 	<c:choose>
 		<c:when test="${not empty pageContext.request.userPrincipal}">
-			<form method="post" action="${pageContext.request.contextPath}/reply/register">
+			<form id="replyRegisterForm" method="post" action="${pageContext.request.contextPath}/reply/register">
 				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 				<input type="hidden" name="bno" value="${board.bno}">
 				<input type="hidden" name="page" value="${pageRequest.page}">
@@ -126,6 +131,270 @@
 			</c:if>
 		</div>
 	</c:forEach>
+	
+	<h3>REST 댓글 목록</h3>
+	<div id="replyListArea"></div>
+	
+	<script>
+ 		const contextPath = '${pageContext.request.contextPath}';
+ 		const bno = '${board.bno}';
+ 		
+ 		const csrfHeader = '${_csrf.headerName}';
+ 		const csrfToken = '${_csrf.token}';
+ 		
+ 		const loginUsername = '${pageContext.request.userPrincipal.name}';
+ 		
+ 		function loadReplies(){
+ 			fetch(contextPath + '/api/replies?bno=' + bno)
+ 			.then(response => {
+ 				if(!response.ok){
+ 					throw new Error('댓글 조회 실패');
+ 				}
+ 				return response.json();
+ 			})
+ 			.then(replyList => {
+ 				console.log(replyList);
+ 				renderReplies(replyList);
+ 			})
+ 			.catch(error => {
+ 				console.error(error);
+ 			});
+ 		}
+ 		
+ 		function renderReplies(replyList){
+ 			const replyListArea = document.querySelector('#replyListArea');
+ 			
+ 			replyListArea.innerHTML = '';
+ 			
+ 			if(replyList.length == 0){
+ 				const message = document.createElement('p');
+ 				message.textContent = '등록한 댓글이 없습니다';
+ 				
+ 				replyListArea.appendChild(message);
+ 				return;
+ 			}
+ 			
+ 			replyList.forEach(reply => {
+ 				const replyBox = document.createElement('div');
+ 				replyBox.classList.add('reply-item');
+ 				
+ 				const textBox = document.createElement('div');
+ 				
+ 				const number = document.createElement('div');
+ 				number.textContent = reply.rno + '. ';
+ 				
+ 				const content = document.createElement('div');
+ 				content.textContent = reply.reply;
+ 				
+ 				const replyer = document.createElement('div');
+ 				replyer.textContent = '작성자: ' + reply.replyer;
+ 				
+ 				const date = document.createElement('div');
+ 				date.textContent = '수정일: ' + (reply.modDate || reply.regDate || '');
+ 				
+ 				textBox.appendChild(number);
+ 				textBox.appendChild(content);
+ 				
+ 				replyBox.appendChild(textBox);
+ 				replyBox.appendChild(replyer);
+ 				replyBox.appendChild(date);
+ 				
+ 				if(loginUsername !== '' && loginUsername === reply.replyer){
+ 					
+ 					const modifyDetails = document.createElement('details');
+ 					
+ 					const modifySummary = document.createElement('summary');
+ 					modifySummary.textContent = '수정'; 
+ 					
+ 					const modifyInput = document.createElement('textarea');
+ 					modifyInput.value = reply.reply;
+ 					
+ 					const modifyButton = document.createElement('button');
+ 					modifyButton.type = 'button';
+ 					modifyButton.textContent = '수정완료';
+ 					
+ 					const deleteButton = document.createElement('button');
+ 					deleteButton.type = 'button';
+ 					deleteButton.textContent = '삭제';
+					
+ 					modifyButton.addEventListener(
+ 						'click',
+ 						function(){
+ 							modifyReply(reply.rno, modifyInput);
+ 						}
+ 					);
+ 					
+ 					deleteButton.addEventListener(
+ 						'click',
+ 						function(){
+ 							deleteReply(reply.rno);
+ 						}
+ 					)
+ 					
+ 					modifyDetails.appendChild(modifySummary);
+ 					modifyDetails.appendChild(modifyInput);
+ 					modifyDetails.appendChild(modifyButton);
+ 					replyBox.appendChild(modifyDetails);
+ 					
+ 					replyBox.appendChild(deleteButton);
+ 				}
+ 				
+ 				replyListArea.appendChild(replyBox);
+ 	 		});
+ 		}
+ 		
+ 		function registerReplies(){
+ 			const replyRegisterForm = 
+ 				document.querySelector('#replyRegisterForm');
+ 			
+ 			if(!replyRegisterForm){
+ 				return
+ 			}
+ 			
+			replyRegisterForm.addEventListener(
+				'submit',
+				function(event){
+					event.preventDefault();
+					event.stopPropagation();
+					
+					const replyInput = 
+						replyRegisterForm.querySelector(
+							'textarea[name="reply"]'		
+						);
+					
+					const replyContent =
+						replyInput.value.trim();
+					
+					if(replyContent === ''){
+						alert('댓글 내용을 입력하세요.');
+						replyInput.focus();
+						return;
+					}
+					
+					fetch(contextPath + '/api/replies', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							[csrfHeader]: csrfToken
+						},
+						body: JSON.stringify({
+							bno: Number(bno),
+							reply: replyContent
+						})
+					})
+					.then(response => {
+						if(!response.ok){
+							return createApiError(
+								response,
+								'댓글 등록 실패'
+							);
+						}
+						
+						return response.text();
+					})
+					.then(result => {
+						console.log(result);
+						replyInput.value = '';
+						
+						loadReplies();
+					})
+					.catch(error => {
+						console.log(error);
+						alert(error.message);
+					});
+				}
+			);
+ 		}
+ 		
+ 		function modifyReply(rno, modifyInput){
+ 			const replyContent = modifyInput.value.trim();
+ 			
+ 			if(replyContent === ''){
+ 				alert('댓글 내용을 입력하세요.');
+ 				modifyInput.focus();
+ 				return;
+ 			}
+ 			
+ 			fetch(
+ 				contextPath + '/api/replies/' + rno,
+ 				{
+ 					method: 'PUT',
+ 					
+ 					headers: {
+ 						'Content-Type': 'application/json',
+ 						[csrfHeader]: csrfToken
+ 					},
+ 					
+ 					body: JSON.stringify({
+ 						reply: replyContent
+ 					})
+ 				}
+ 			)
+ 			.then(response => {
+ 				if(!response.ok){
+ 					return createApiError(
+						response,
+						'댓글 수정 실패'
+ 					);
+ 				}
+ 			})
+ 			.then(() => {loadReplies();})
+ 			.catch(error => {
+ 				console.error(error);
+ 				alert(error.message);
+ 			});
+ 		}
+ 		
+ 		function deleteReply(rno){
+ 			const confirmed = confirm('댓글을 삭제하시겠습니까?');
+ 			
+ 			if(!confirmed){
+ 				return
+ 			}
+ 			
+ 			fetch(
+ 				contextPath + '/api/replies/' + rno,
+ 				{
+ 					method: 'DELETE',
+ 					
+ 					headers: {
+ 						[csrfHeader]: csrfToken
+ 					}
+ 				}
+ 			)
+ 			.then(response => {
+ 				if(!response.ok){
+ 					return createApiError(
+ 						response,
+ 						'댓글 삭제 실패'
+ 					);
+ 				}	
+ 			})
+ 			.then(() => {
+ 				loadReplies();
+ 			})
+ 			.catch(error => {
+ 				console.error(error);
+ 				alert(error.message);
+ 			});
+ 		}
+ 		
+ 		function createApiError(response, defaultMessage){
+ 			return response.json()
+ 				.then(errorBody => {
+ 					let message = errorBody.message;
+ 					
+ 					if(errorBody.errors && errorBody.errors.reply){
+ 						message = errorBody.errors.reply;
+ 					}
+ 					
+ 					throw new Error(message || defaultMessage);
+ 				});
+ 		}
+ 		
+	 	loadReplies();
+	 	registerReplies();
+	</script>
 	
 </body>
 </html>

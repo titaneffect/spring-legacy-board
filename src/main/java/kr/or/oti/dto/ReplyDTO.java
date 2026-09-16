@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,10 +26,17 @@ public class ReplyDTO {
 	@NotBlank(message = "내용을 입력하세요.")
 	private String reply;
 	
-	@NotBlank(message = "작성자를 입력하세요.")
 	private String replyer;
 	
+	@JsonFormat(
+		shape = JsonFormat.Shape.STRING,
+		pattern = "yyyy-MM-dd HH:mm:ss"
+	)
 	private LocalDateTime regDate;
 	
+	@JsonFormat(
+		shape = JsonFormat.Shape.STRING,
+		pattern = "yyyy-MM-dd HH:mm:ss"
+	)
 	private LocalDateTime modDate;
 }

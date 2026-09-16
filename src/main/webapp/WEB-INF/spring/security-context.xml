@@ -19,6 +19,8 @@
 		<intercept-url pattern="/" access="permitAll" />
 		<intercept-url pattern="/board/list" access="permitAll" />
 		<intercept-url pattern="/board/read" access="permitAll" />
+		<intercept-url pattern="/api/replies"
+			method="GET" access="permitAll" />
 		<intercept-url pattern="/member/login" access="permitAll"/>
 		<intercept-url pattern="/member/register" access="permitAll"/>
 		<intercept-url pattern="/admin/**" access="hasRole('ADMIN')" />
