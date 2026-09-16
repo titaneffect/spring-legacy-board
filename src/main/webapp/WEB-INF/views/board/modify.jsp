@@ -12,7 +12,7 @@
 
 	<jsp:include page="/WEB-INF/views/common/header.jsp"/>
 
-	<form method="post"
+	<form method="post" enctype="multipart/form-data"
 		action="${pageContext.request.contextPath}/board/modify">
 		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 		<input type="hidden" name="bno" value="${board.bno}">
@@ -24,6 +24,7 @@
 		<input type="text" name="title" value="${board.title}">
 		<textarea name="content">${board.content}</textarea>
 		<input type="hidden" name="writer" value="${board.writer}">
+		<input type="file" id="uploadFiles" name="uploadFiles" multiple>
 		<button type="submit">수정</button>
 	</form>
 	
@@ -33,6 +34,18 @@
 		</c:forEach>
 	</c:if>
 	
+	<h3>첨부파일</h3>
+	<c:if test="${not empty attachList}">
+		<c:forEach var="attach" items="${attachList}">
+			<div>
+				${attach.fileName}
+				<%-- <img src="${pageContext.request.contextPath}/attachments/${attach.ano}/view"
+					alt="${attach.fileName}"
+				 	width="150">
+				 	--%>
+			</div>
+		</c:forEach>
+	</c:if>
 	<form method="post"
 		action="${pageContext.request.contextPath}/board/remove">
 		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">

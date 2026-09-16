@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="kr.or.oti.mapper.BoardAttachMapper">
+	<select id="selectByBno" resultType="kr.or.oti.domain.BoardAttachVO">
+		SELECT
+			ANO,
+			BNO,
+			UUID,
+			FILE_NAME AS fileName,
+			UPLOAD_PATH AS uploadPath,
+			FILE_SIZE AS fileSize,
+			CONTENT_TYPE AS contentType,
+			REGDATE AS regDate
+		FROM BOARD_ATTACH
+		WHERE BNO = #{bno}
+		ORDER BY ANO DESC
+	</select>
+	
+	<select id="selectOne" resultType="kr.or.oti.domain.BoardAttachVO">
+		SELECT
+			ANO,
+			BNO,
+			UUID,
+			FILE_NAME AS fileName,
+			UPLOAD_PATH AS uploadPath,
+			FILE_SIZE AS fileSize,
+			CONTENT_TYPE AS contentType,
+			REGDATE AS regDate
+		FROM BOARD_ATTACH
+		WHERE ANO = #{ano}
+	</select>
+	
+	<insert id="insertOne">
+		<selectKey keyProperty="ano" resultType="long" order="BEFORE">
+			SELECT SEQ_BOARD_ATTACH.NEXTVAL
+			FROM DUAL
+		</selectKey>
+		INSERT INTO BOARD_ATTACH
+		(
+			ANO,
+			BNO,
+			UUID,
+			FILE_NAME,
+			UPLOAD_PATH,
+			FILE_SIZE,
+			CONTENT_TYPE
+		)
+		VALUES
+		(
+			#{ano},
+			#{bno},
+			#{uuid},
+			#{fileName},
+			#{uploadPath},
+			#{fileSize},
+			#{contentType}
+		)
+	</insert>
+</mapper>

@@ -12,12 +12,13 @@
 
 	<jsp:include page="/WEB-INF/views/common/header.jsp"/>
 
-	<form method="post"
+	<form method="post" enctype="multipart/form-data"
       action="${pageContext.request.contextPath}/board/register">
 	    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 	    <input type="text" name="title" value="${board.title}">
 	    <textarea name="content">${board.content}</textarea>
 	    <input type="hidden" name="writer" value="${pageContext.request.userPrincipal.name}">
+	    <input type="file" id="uploadFiles" name="uploadFiles" multiple>
 	    
 	    <c:if test="${not empty errors}">
 	    	<c:forEach var="error" items="${errors}">

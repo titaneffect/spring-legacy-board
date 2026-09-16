@@ -1,6 +1,7 @@
 package kr.or.oti.controller;
 
 import java.security.Principal;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -12,9 +13,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import kr.or.oti.dto.BoardDTO;
 import kr.or.oti.dto.PageRequestDTO;
+import kr.or.oti.service.BoardAttachService;
 import kr.or.oti.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class BoardController {
 
 	private final BoardService boardService;
+	private final BoardAttachService boardAttachService;
 	
 	@GetMapping("/list")
 	public String list(PageRequestDTO pageRequestDTO, Model model) {
@@ -38,6 +43,7 @@ public class BoardController {
 	public String read(Long bno, PageRequestDTO pageRequestDTO, Model model) {
 		model.addAttribute("board", boardService.get(bno));
 		model.addAttribute("pageRequest", pageRequestDTO);
+		model.addAttribute("attachList", boardAttachService.getList(bno));
 		return "board/read";
 	}
 	
@@ -48,7 +54,8 @@ public class BoardController {
 	
 	@PostMapping("/register")
 	public String register(@Valid @ModelAttribute("board") BoardDTO boardDTO,
-			BindingResult bindingResult, Model model, Principal principal) {
+			BindingResult bindingResult, Model model, Principal principal,
+			@RequestParam(value = "uploadFiles", required = false)List<MultipartFile> uploadFiles) {
 		
 		if(bindingResult.hasErrors()) {
 			log.info("has errors....");
@@ -56,8 +63,17 @@ public class BoardController {
 			return "board/register";
 		}
 		
-		boardDTO.setWriter(principal.getName());
+		if(uploadFiles != null) {
+			for(MultipartFile uploadFile : uploadFiles) {
+				if(uploadFile.isEmpty()) {
+					continue;
+				}
+				
+				log.info("fileName: {}", uploadFile.getOriginalFilename());
+			}
+		}
 		
+		boardDTO.setWriter(principal.getName());		
 		boardService.register(boardDTO);
 		return "redirect:/board/list";
 	}
@@ -65,6 +81,7 @@ public class BoardController {
 	@GetMapping("/modify")
 	public String modify(Long bno, PageRequestDTO pageRequestDTO, Model model,
 			Principal principal) {
+		
 		BoardDTO boardDTO = boardService.get(bno);
 		
 		if(!principal.getName().equals(boardDTO.getWriter())) {
@@ -72,13 +89,16 @@ public class BoardController {
 		}
 		model.addAttribute("board", boardDTO);
 		model.addAttribute("pageRequest", pageRequestDTO);
+		model.addAttribute("attachList", boardAttachService.getList(bno));
 		return "board/modify";
 	}
 
 	@PostMapping("/modify")
 	public String modify(@Valid @ModelAttribute("board") BoardDTO boardDTO,
 			BindingResult bindingResult, PageRequestDTO pageRequestDTO,
-			Model model, Principal principal) { 
+			Model model, Principal principal,
+			@RequestParam(value = "uploadFiles", required = false)List<MultipartFile> uploadFiles,
+			@RequestParam(value = "deleteAnoList", required = false)List<Long> deleteAnoList) { 
 		
 		 // 1. DB에 원본 게시글 조회
 		BoardDTO savedBoard = boardService.get(boardDTO.getBno());
@@ -93,10 +113,27 @@ public class BoardController {
 			log.info("has errors....");
 			model.addAttribute("errors", bindingResult.getAllErrors());
 			model.addAttribute("pageRequest", pageRequestDTO);
+			model.addAttribute("attachList", boardAttachService.getList(boardDTO.getBno()));
 			return "board/modify";
 		}
 		
 		// 4. 작성자가 맞을 때만 수정
+		if(uploadFiles != null) {
+			for(MultipartFile uploadFile : uploadFiles) {
+				if(uploadFile.isEmpty()) {
+					continue;
+				}
+				
+				log.info("fileName: {}", uploadFile.getOriginalFilename());
+			}
+		}
+		
+		if(deleteAnoList != null) {
+			for(Long ano : deleteAnoList) {
+				log.info("삭제할 첨부파일 번호: {}", ano);
+			}
+		}
+		
 		boardService.modify(boardDTO);
 		return "redirect:/board/read?bno=" + boardDTO.getBno()
 			+ "&" + pageRequestDTO.getLink();

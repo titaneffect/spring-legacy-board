@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <!DOCTYPE html>
 <html>
@@ -69,6 +70,19 @@
 	<c:if test="${not empty registerErrors}">
 		<c:forEach var="error" items="${registerErrors}">
 			<li>${error.defaultMessage}</li>
+		</c:forEach>
+	</c:if>
+	
+	<h3>첨부파일</h3>
+	<c:if test="${not empty attachList}">
+		<c:forEach var="attach" items="${attachList}">
+			<div>
+				${attach.fileName}
+				<%-- <img src="${pageContext.request.contextPath}/attachments/${attach.ano}/view"
+					alt="${attach.fileName}"
+					width="150">
+					 --%>
+			</div>
 		</c:forEach>
 	</c:if>
 	
