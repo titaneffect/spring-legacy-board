@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import kr.or.oti.dto.BoardDTO;
 import kr.or.oti.dto.PageRequestDTO;
 import kr.or.oti.service.BoardService;
-import kr.or.oti.service.ReplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 public class BoardController {
 
 	private final BoardService boardService;
-	private final ReplyService replyService;
 	
 	@GetMapping("/list")
 	public String list(PageRequestDTO pageRequestDTO, Model model) {
@@ -40,7 +38,6 @@ public class BoardController {
 	public String read(Long bno, PageRequestDTO pageRequestDTO, Model model) {
 		model.addAttribute("board", boardService.get(bno));
 		model.addAttribute("pageRequest", pageRequestDTO);
-		model.addAttribute("replyList", replyService.getList(bno));
 		return "board/read";
 	}
 	
