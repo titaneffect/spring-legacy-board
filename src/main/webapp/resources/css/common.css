@@ -1,0 +1,969 @@
+@charset "UTF-8";
+
+:root {
+    --cafe-green: #03c75a;
+    --cafe-green-dark: #02a94c;
+
+    --cafe-background: #f5f6f7;
+    --cafe-surface: #ffffff;
+
+    --cafe-text: #202124;
+    --cafe-text-light: #6b7280;
+
+    --cafe-border: #e3e7e4;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+
+    background-color: var(--cafe-background);
+    color: var(--cafe-text);
+
+    font-family:
+        Arial,
+        "Malgun Gothic",
+        sans-serif;
+}
+
+/* 상단 공통 메뉴 */
+
+.cafe-topbar {
+    background-color: var(--cafe-surface);
+    border-bottom: 1px solid var(--cafe-border);
+}
+
+.cafe-topbar-inner {
+    min-height: 42px;
+
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.cafe-service-logo {
+    color: var(--cafe-green);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.cafe-service-logo:hover {
+    color: var(--cafe-green-dark);
+}
+
+.cafe-utility-menu {
+    margin-left: auto;
+
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    font-size: 0.8rem;
+}
+
+.cafe-utility-menu a {
+    color: var(--cafe-text);
+    text-decoration: none;
+}
+
+.cafe-utility-menu a:hover {
+    color: var(--cafe-green);
+}
+
+.cafe-login-user {
+    color: var(--cafe-text-light);
+}
+
+.cafe-logout-form {
+    display: inline;
+    margin: 0;
+}
+
+.cafe-logout-form button {
+    padding: 0;
+
+    background: none;
+    border: 0;
+
+    color: var(--cafe-text);
+    cursor: pointer;
+    font-size: inherit;
+}
+
+.cafe-logout-form button:hover {
+    color: var(--cafe-green);
+}
+
+/* 공통 페이지 */
+
+.main-content {
+    min-height: calc(100vh - 42px);
+}
+
+/* 첨부파일과 댓글 */
+
+.board-content {
+    min-height: 240px;
+    white-space: pre-wrap;
+}
+
+.attachment-image {
+    width: 160px;
+    height: 120px;
+
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.reply-item {
+    margin-bottom: 16px;
+}
+
+/* 모바일 */
+
+@media (max-width: 576px) {
+    .cafe-topbar-inner {
+        min-height: auto;
+        padding-top: 10px;
+        padding-bottom: 10px;
+
+        flex-wrap: wrap;
+    }
+
+    .cafe-utility-menu {
+        width: 100%;
+        margin-left: 0;
+
+        flex-wrap: wrap;
+    }
+}
+
+/* 카페 배너 */
+
+.cafe-banner {
+    position: relative;
+    min-height: 170px;
+    padding: 36px 40px;
+
+    display: flex;
+    align-items: center;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            120deg,
+            #ffffff 55%,
+            #dff8e9 100%
+        );
+
+    border: 1px solid var(--cafe-border);
+}
+
+.cafe-banner::after {
+    content: "";
+
+    position: absolute;
+    right: 70px;
+    top: 30px;
+
+    width: 150px;
+    height: 100px;
+
+    background-color: var(--cafe-green);
+    border-radius: 70% 30% 60% 40%;
+    opacity: 0.85;
+}
+
+.cafe-banner-content {
+    position: relative;
+    z-index: 1;
+}
+
+.cafe-banner-label {
+    color: var(--cafe-green);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.cafe-banner-title {
+    margin: 6px 0;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.cafe-banner-description {
+    margin: 0;
+    color: var(--cafe-text-light);
+}
+
+/* 왼쪽 사이드바 */
+
+.cafe-sidebar-card,
+.cafe-sidebar-menu {
+    background-color: var(--cafe-surface);
+    border: 1px solid var(--cafe-border);
+}
+
+.cafe-sidebar-card {
+    padding: 20px;
+}
+
+.cafe-profile-image {
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #e2f7eb;
+    border-radius: 50%;
+
+    color: var(--cafe-green);
+    font-weight: 700;
+}
+
+.cafe-write-button {
+    width: 100%;
+    min-height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--cafe-green);
+    border-radius: 4px;
+
+    color: #ffffff;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.cafe-write-button:hover {
+    background-color: var(--cafe-green-dark);
+    color: #ffffff;
+}
+
+.cafe-sidebar-title {
+    margin: 0;
+    padding: 12px 15px;
+
+    border-bottom: 1px solid var(--cafe-border);
+
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.cafe-sidebar-link {
+    display: block;
+    padding: 11px 15px;
+
+    color: var(--cafe-text);
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.cafe-sidebar-link:hover,
+.cafe-sidebar-link.active {
+    background-color: #edf9f2;
+    color: var(--cafe-green-dark);
+}
+
+/* 환영 영역 */
+
+.cafe-welcome {
+    min-height: 170px;
+    padding: 36px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    background-color: var(--cafe-surface);
+    border: 1px solid var(--cafe-border);
+}
+
+.cafe-welcome h2 {
+    margin-bottom: 10px;
+    font-size: 1.7rem;
+    font-weight: 700;
+}
+
+.cafe-welcome p {
+    margin: 0;
+    color: var(--cafe-text-light);
+}
+
+/* 게시글 영역 */
+
+.cafe-board-panel {
+    padding: 24px;
+
+    background-color: var(--cafe-surface);
+    border: 1px solid var(--cafe-border);
+}
+
+.cafe-board-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.cafe-search-button {
+    background-color: var(--cafe-green);
+    color: #ffffff;
+}
+
+.cafe-search-button:hover {
+    background-color: var(--cafe-green-dark);
+    color: #ffffff;
+}
+
+.cafe-board-table thead th {
+    border-top: 1px solid #495057;
+    border-bottom: 1px solid var(--cafe-border);
+
+    color: var(--cafe-text-light);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.cafe-board-table tbody td {
+    font-size: 0.9rem;
+}
+
+.board-title-link {
+    color: var(--cafe-text);
+    text-decoration: none;
+}
+
+.board-title-link:hover {
+    color: var(--cafe-green);
+}
+
+/* Bootstrap 페이지네이션 색상 변경 */
+
+.pagination {
+    --bs-pagination-color: var(--cafe-text);
+    --bs-pagination-hover-color: var(--cafe-green);
+    --bs-pagination-focus-color: var(--cafe-green);
+
+    --bs-pagination-active-bg: var(--cafe-green);
+    --bs-pagination-active-border-color: var(--cafe-green);
+}
+
+/* 모바일 */
+
+@media (max-width: 768px) {
+    .cafe-banner {
+        min-height: 140px;
+        padding: 26px 22px;
+    }
+
+    .cafe-banner::after {
+        right: -35px;
+        opacity: 0.35;
+    }
+
+    .cafe-banner-title {
+        font-size: 1.6rem;
+    }
+
+    .cafe-welcome {
+        min-height: 140px;
+        padding: 24px;
+    }
+
+    .cafe-board-panel {
+        padding: 18px;
+    }
+}
+
+/* 게시글 상세 */
+
+.cafe-post-panel,
+.cafe-reply-panel {
+    padding: 28px;
+
+    background-color: var(--cafe-surface);
+    border: 1px solid var(--cafe-border);
+}
+
+.cafe-post-header {
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--cafe-border);
+}
+
+.cafe-post-category {
+    color: var(--cafe-green);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.cafe-post-title {
+    margin: 8px 0 14px;
+    font-size: 1.7rem;
+    font-weight: 700;
+}
+
+.cafe-post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+
+    color: var(--cafe-text-light);
+    font-size: 0.85rem;
+}
+
+.cafe-post-content {
+    min-height: 260px;
+    padding: 32px 4px;
+
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+/* 첨부파일 */
+
+.cafe-attachment-section {
+    padding: 24px 0;
+    border-top: 1px solid var(--cafe-border);
+}
+
+.cafe-attachment-section h2 {
+    margin-bottom: 16px;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.cafe-attachment-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+}
+
+.cafe-attachment-item {
+    min-width: 0;
+    padding: 10px;
+
+    background-color: #f8f9fa;
+    border: 1px solid var(--cafe-border);
+}
+
+.cafe-attachment-item .attachment-image {
+    width: 100%;
+    height: 120px;
+}
+
+.cafe-file-placeholder {
+    height: 120px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #e9ecef;
+
+    color: var(--cafe-text-light);
+    font-weight: 700;
+}
+
+.cafe-attachment-name {
+    display: block;
+    margin-top: 8px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: var(--cafe-text);
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+.cafe-attachment-name:hover {
+    color: var(--cafe-green);
+}
+
+/* 게시글 버튼 */
+
+.cafe-post-actions {
+    padding-top: 20px;
+    border-top: 1px solid var(--cafe-border);
+
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.cafe-primary-button {
+    background-color: var(--cafe-green);
+    border-color: var(--cafe-green);
+
+    color: #ffffff;
+}
+
+.cafe-primary-button:hover {
+    background-color: var(--cafe-green-dark);
+    border-color: var(--cafe-green-dark);
+
+    color: #ffffff;
+}
+
+/* 댓글 */
+
+.cafe-reply-heading {
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--cafe-border);
+}
+
+.cafe-reply-heading h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.cafe-reply-form {
+    margin-top: 20px;
+    padding: 18px;
+
+    background-color: #f8f9fa;
+    border: 1px solid var(--cafe-border);
+}
+
+.cafe-login-guide {
+    margin-top: 20px;
+    padding: 18px;
+
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+
+    background-color: #f8f9fa;
+    border: 1px solid var(--cafe-border);
+}
+
+.cafe-login-guide a {
+    color: var(--cafe-green);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.cafe-reply-list {
+    margin-top: 24px;
+}
+
+.reply-item {
+    margin: 0;
+    padding: 18px 4px;
+
+    border-top: 1px solid var(--cafe-border);
+}
+
+.reply-item details {
+    margin-top: 10px;
+}
+
+.reply-item textarea {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+
+    border: 1px solid var(--cafe-border);
+    border-radius: 4px;
+}
+
+/* 상세 화면 모바일 */
+
+@media (max-width: 768px) {
+    .cafe-post-panel,
+    .cafe-reply-panel {
+        padding: 20px;
+    }
+
+    .cafe-post-title {
+        font-size: 1.4rem;
+    }
+
+    .cafe-post-content {
+        min-height: 180px;
+        padding: 24px 0;
+    }
+}
+
+/* 게시글 등록·수정 form */
+
+.cafe-form-panel {
+    padding: 28px;
+
+    background-color: var(--cafe-surface);
+    border: 1px solid var(--cafe-border);
+}
+
+.cafe-form-header {
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+
+    border-bottom: 1px solid var(--cafe-border);
+}
+
+.cafe-form-category {
+    color: var(--cafe-green);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.cafe-form-header h1 {
+    margin: 8px 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.cafe-form-header p {
+    margin: 0;
+    color: var(--cafe-text-light);
+}
+
+.cafe-content-input {
+    min-height: 320px;
+    resize: vertical;
+}
+
+.cafe-form-actions {
+    padding-top: 20px;
+
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+
+    border-top: 1px solid var(--cafe-border);
+}
+
+@media (max-width: 768px) {
+    .cafe-form-panel {
+        padding: 20px;
+    }
+
+    .cafe-content-input {
+        min-height: 240px;
+    }
+}
+
+/* 기존 첨부파일 */
+
+.cafe-existing-attachments {
+    padding: 20px;
+
+    background-color: #f8f9fa;
+    border: 1px solid var(--cafe-border);
+}
+
+.cafe-existing-attachments h2 {
+    margin-bottom: 6px;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.cafe-existing-attachments > p {
+    margin-bottom: 16px;
+
+    color: var(--cafe-text-light);
+    font-size: 0.85rem;
+}
+
+.cafe-existing-attachment-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fill, minmax(150px, 1fr));
+    gap: 14px;
+}
+
+.cafe-existing-attachment {
+    position: relative;
+    min-width: 0;
+    padding: 8px;
+
+    background-color: #ffffff;
+    border: 1px solid var(--cafe-border);
+}
+
+.cafe-existing-attachment img {
+    width: 100%;
+    height: 110px;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+.cafe-existing-file-name {
+    display: block;
+    margin-top: 8px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    font-size: 0.8rem;
+}
+
+.attach-remove-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+
+    width: 28px;
+    height: 28px;
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: rgb(0 0 0 / 65%);
+    border: 0;
+    border-radius: 50%;
+
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.attach-remove-button:hover {
+    background-color: #dc3545;
+}
+
+/* 게시글 삭제 영역 */
+
+.cafe-danger-zone {
+    padding: 20px 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    background-color: #ffffff;
+    border: 1px solid #f1b7bc;
+}
+
+.cafe-danger-zone p {
+    margin: 4px 0 0;
+
+    color: var(--cafe-text-light);
+    font-size: 0.85rem;
+}
+
+@media (max-width: 576px) {
+    .cafe-danger-zone {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .cafe-danger-zone form,
+    .cafe-danger-zone button {
+        width: 100%;
+    }
+}
+
+/* 로그인·회원가입 */
+
+.cafe-auth-page {
+    min-height: calc(100vh - 42px);
+    padding-top: 70px;
+    padding-bottom: 70px;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.cafe-auth-card {
+    width: 100%;
+    max-width: 440px;
+    padding: 36px;
+
+    background-color: var(--cafe-surface);
+    border: 1px solid var(--cafe-border);
+}
+
+.cafe-auth-logo {
+    display: inline-block;
+    margin-bottom: 22px;
+
+    color: var(--cafe-green);
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.cafe-auth-logo:hover {
+    color: var(--cafe-green-dark);
+}
+
+.cafe-auth-card h1 {
+    margin-bottom: 8px;
+
+    font-size: 1.7rem;
+    font-weight: 700;
+}
+
+.cafe-auth-description {
+    margin-bottom: 28px;
+    color: var(--cafe-text-light);
+}
+
+.cafe-auth-links {
+    margin-top: 24px;
+
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+
+    color: var(--cafe-text-light);
+    font-size: 0.9rem;
+}
+
+.cafe-auth-links a {
+    color: var(--cafe-green);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.cafe-auth-back {
+    display: block;
+    margin-top: 14px;
+
+    color: var(--cafe-text-light);
+    font-size: 0.85rem;
+    text-align: center;
+    text-decoration: none;
+}
+
+.cafe-auth-back:hover {
+    color: var(--cafe-green);
+}
+
+@media (max-width: 576px) {
+    .cafe-auth-page {
+        padding-top: 30px;
+        padding-bottom: 30px;
+    }
+
+    .cafe-auth-card {
+        padding: 24px 20px;
+    }
+}
+
+/* 오류 화면 */
+
+.cafe-error-page {
+    min-height: calc(100vh - 42px);
+    padding-top: 80px;
+    padding-bottom: 80px;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.cafe-error-card {
+    width: 100%;
+    max-width: 540px;
+    padding: 48px 36px;
+
+    background-color: var(--cafe-surface);
+    border: 1px solid var(--cafe-border);
+
+    text-align: center;
+}
+
+.cafe-error-symbol {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #edf9f2;
+    border-radius: 50%;
+
+    color: var(--cafe-green);
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.cafe-error-code {
+    color: var(--cafe-green);
+    font-size: 0.85rem;
+}
+
+.cafe-error-card h1 {
+    margin: 10px 0 12px;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.cafe-error-card p {
+    margin-bottom: 28px;
+    color: var(--cafe-text-light);
+}
+
+.cafe-error-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* 관리자 화면 */
+
+.cafe-admin-header {
+    padding: 30px;
+
+    background-color: var(--cafe-surface);
+    border: 1px solid var(--cafe-border);
+}
+
+.cafe-admin-header > span {
+    color: var(--cafe-green);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.cafe-admin-header h1 {
+    margin: 8px 0;
+    font-size: 1.7rem;
+    font-weight: 700;
+}
+
+.cafe-admin-header p {
+    margin: 0;
+    color: var(--cafe-text-light);
+}
+
+.cafe-admin-card {
+    height: 100%;
+    padding: 24px;
+
+    background-color: var(--cafe-surface);
+    border: 1px solid var(--cafe-border);
+}
+
+.cafe-admin-card h2 {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.cafe-admin-card p {
+    min-height: 48px;
+    margin-bottom: 18px;
+
+    color: var(--cafe-text-light);
+    font-size: 0.9rem;
+}

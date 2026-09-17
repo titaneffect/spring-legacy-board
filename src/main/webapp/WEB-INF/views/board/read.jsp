@@ -7,86 +7,232 @@
 <head>
 	<meta charset="UTF-8">
 	<title>${board.title}</title>
-	<style>
-		.reply-item{
-			margin-bottom: 20px;
-		}
-	</style>
+	
+	<jsp:include page="/WEB-INF/views/common/styles.jsp"/>
 </head>
 <body>
-    <c:if test="${empty pageContext.request.userPrincipal}">
-		<a href="${pageContext.request.contextPath}/member/login?bno=${board.bno}">
-			로그인
-		</a>
-		<a href="${pageContext.request.contextPath}/member/register">
-			회원가입
-		</a>
-	</c:if>
-	<c:if test="${not empty pageContext.request.userPrincipal}">
-        <span>
-            ${pageContext.request.userPrincipal.name}
-        </span>
 
-        <form method="post"
-              action="${pageContext.request.contextPath}/logout">
+    <jsp:include
+        page="/WEB-INF/views/common/header.jsp"/>
 
-            <input type="hidden"
-                   name="${_csrf.parameterName}"
-                   value="${_csrf.token}">
+    <main class="container main-content py-4">
 
-            <button type="submit">로그아웃</button>
-        </form>
-    </c:if>
+        <jsp:include
+            page="/WEB-INF/views/common/cafeBanner.jsp"/>
 
-	<h1>${board.title}</h1>
-	
-	<p>번호: ${board.bno}</p>
-	<p>작성자: ${board.writer}</p>
-	<p>내용: ${board.content}</p>
-	
-	<a href="${pageContext.request.contextPath}/board/list?&${pageRequest.link}">
-		목록
-	</a>
-	<c:if test="${not empty pageContext.request.userPrincipal and pageContext.request.userPrincipal.name eq board.writer}">
-		<a href="${pageContext.request.contextPath}/board/modify?bno=${board.bno}&${pageRequest.link}">
-			수정
-		</a>
-	</c:if>
+        <div class="row g-4 align-items-start">
 
-	<c:choose>
-		<c:when test="${not empty pageContext.request.userPrincipal}">
-			<form id="replyRegisterForm" method="post" action="${pageContext.request.contextPath}/reply/register">
-				<textarea name="reply">${replyInputRegister.reply}</textarea>
-				<button type="submit">댓글 등록</button>
-			</form>
-		</c:when>
-		
-		<c:otherwise>
-			<p>댓글을 작성하려면 로그인이 필요합니다.</p>
-		</c:otherwise>
-	</c:choose>
-	
-	
-	<c:if test="${not empty registerErrors}">
-		<c:forEach var="error" items="${registerErrors}">
-			<li>${error.defaultMessage}</li>
-		</c:forEach>
-	</c:if>
-	
-	<h3>첨부파일</h3>
-	<c:if test="${not empty attachList}">
-		<c:forEach var="attach" items="${attachList}">
-			<div>
-				${attach.fileName}
-				<c:if test="${fn:startsWith(attach.contentType, 'image/')}">
-					<img src="${pageContext.request.contextPath}/attachments/${attach.ano}/view"
-					alt="${attach.fileName}"
-					width="150">
-				</c:if>
-			</div>
-		</c:forEach>
-	</c:if>
-	
+            <jsp:include
+                page="/WEB-INF/views/common/cafeSidebar.jsp"/>
+
+            <section class="col-lg-9">
+
+                <!-- 게시글 본문 -->
+                <article class="cafe-post-panel">
+
+                    <header class="cafe-post-header">
+
+                        <span class="cafe-post-category">
+                            전체글보기
+                        </span>
+
+                        <h1 class="cafe-post-title">
+                            <c:out value="${board.title}"/>
+                        </h1>
+
+                        <div class="cafe-post-meta">
+
+                            <span>
+                                작성자
+                                <strong>
+                                    <c:out value="${board.writer}"/>
+                                </strong>
+                            </span>
+
+                            <span>
+                                등록일 ${fn:replace(fn:substring(board.regDate, 0, 16),'T',' ')}
+                            </span>
+
+                            <c:if test="${not empty board.modDate}">
+                                <span>
+                                    수정일 ${fn:replace(fn:substring(board.modDate, 0, 16),'T',' ')}
+                                </span>
+                            </c:if>
+
+                            <span>
+                                글번호 ${board.bno}
+                            </span>
+
+                        </div>
+                    </header>
+
+                    <!-- 게시글 내용 -->
+                    <div class="cafe-post-content">
+                        <c:out value="${board.content}"/>
+                    </div>
+
+                    <!-- 첨부파일 -->
+                    <c:if test="${not empty attachList}">
+
+                        <section class="cafe-attachment-section">
+
+                            <h2>
+                                첨부파일
+                            </h2>
+
+                            <div class="cafe-attachment-grid">
+
+                                <c:forEach var="attach"
+                                           items="${attachList}">
+
+                                    <div class="cafe-attachment-item">
+
+                                        <c:choose>
+
+                                            <c:when test="${fn:startsWith(
+                                                    attach.contentType,
+                                                    'image/')}">
+
+                                                <a href="${pageContext.request.contextPath}/attachments/${attach.ano}/view"
+                                                   target="_blank">
+
+                                                    <img class="attachment-image"
+                                                         src="${pageContext.request.contextPath}/attachments/${attach.ano}/view"
+                                                         alt="${attach.fileName}">
+
+                                                </a>
+
+                                            </c:when>
+
+                                            <c:otherwise>
+
+                                                <div class="cafe-file-placeholder">
+                                                    FILE
+                                                </div>
+
+                                            </c:otherwise>
+
+                                        </c:choose>
+
+                                        <a class="cafe-attachment-name"
+                                           href="${pageContext.request.contextPath}/attachments/${attach.ano}/view"
+                                           target="_blank">
+                                            <c:out value="${attach.fileName}"/>
+                                        </a>
+
+                                    </div>
+
+                                </c:forEach>
+                            </div>
+                        </section>
+                    </c:if>
+
+                    <!-- 게시글 버튼 -->
+                    <footer class="cafe-post-actions">
+
+                        <a class="btn btn-outline-secondary"
+                           href="${pageContext.request.contextPath}/board/list?${pageRequest.link}">
+                            목록
+                        </a>
+
+                        <c:if test="${not empty pageContext.request.userPrincipal
+                            and pageContext.request.userPrincipal.name eq board.writer}">
+
+                            <a class="btn cafe-primary-button"
+                               href="${pageContext.request.contextPath}/board/modify?bno=${board.bno}&${pageRequest.link}">
+                                수정
+                            </a>
+
+                        </c:if>
+
+                    </footer>
+                </article>
+
+                <!-- 댓글 영역 -->
+                <section class="cafe-reply-panel mt-4">
+
+                    <div class="cafe-reply-heading">
+                        <h2>
+                            댓글
+                        </h2>
+                    </div>
+
+                    <c:choose>
+
+                        <c:when test="${not empty pageContext.request.userPrincipal}">
+
+                            <form id="replyRegisterForm"
+                                  class="cafe-reply-form"
+                                  method="post">
+
+                                <label class="form-label"
+                                       for="replyInput">
+                                    댓글 작성
+                                </label>
+
+                                <textarea class="form-control"
+                                          id="replyInput"
+                                          name="reply"
+                                          rows="3"
+                                          placeholder="댓글을 입력하세요">${replyInputRegister.reply}</textarea>
+
+                                <div class="text-end mt-2">
+
+                                    <button class="btn cafe-primary-button"
+                                            type="submit">
+                                        댓글 등록
+                                    </button>
+
+                                </div>
+                            </form>
+
+                        </c:when>
+
+                        <c:otherwise>
+
+                            <div class="cafe-login-guide">
+
+                                <span>
+                                    댓글을 작성하려면 로그인이 필요합니다.
+                                </span>
+
+                                <a href="${pageContext.request.contextPath}/member/login?bno=${board.bno}">
+                                    로그인
+                                </a>
+
+                            </div>
+
+                        </c:otherwise>
+
+                    </c:choose>
+
+                    <c:if test="${not empty registerErrors}">
+
+                        <div class="alert alert-danger mt-3"
+                             role="alert">
+
+                            <c:forEach var="error"
+                                       items="${registerErrors}">
+
+                                <div>
+                                    ${error.defaultMessage}
+                                </div>
+
+                            </c:forEach>
+                        </div>
+                    </c:if>
+
+                    <div id="replyListArea"
+                         class="cafe-reply-list">
+                    </div>
+
+                </section>
+
+            </section>
+        </div>
+    </main>
+
+    <!-- 기존 댓글 JavaScript를 이 위치에 그대로 유지 -->
 	<h3>댓글</h3>
 	<div id="replyListArea"></div>
 	
