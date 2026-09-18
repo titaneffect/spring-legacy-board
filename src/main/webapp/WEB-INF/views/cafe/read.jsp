@@ -62,13 +62,108 @@
         <div class="col-lg-8">
             <section class="cafe-board-panel">
 
-                <div class="cafe-board-title">
-                    카페 게시판
-                </div>
-
-                <div class="text-center text-muted py-5">
-                    아직 만들어진 게시판이 없습니다.
-                </div>
+                <div class="d-flex
+            justify-content-between
+            align-items-center
+            gap-3">
+	
+				    <div class="cafe-board-title">
+					        카페 게시판
+				    </div>
+				
+				    <c:if test="${not empty pageContext.request.userPrincipal
+				                  and pageContext.request.userPrincipal.name
+				                      eq cafe.ownerUsername}">
+				
+				        <a href="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/boards/register"
+				           class="btn btn-sm cafe-primary-button">
+				            게시판 만들기
+				        </a>
+				
+				    </c:if>
+				
+				</div>
+				
+				<c:choose>
+				
+				    <c:when test="${empty cafeBoardList}">
+				        <div class="text-center text-muted py-5">
+				            아직 만들어진 게시판이 없습니다.
+				        </div>
+				    </c:when>
+				
+				    <c:otherwise>
+				
+				        <div class="list-group list-group-flush mt-3">
+				
+				            <c:forEach var="cafeBoard"
+				                       items="${cafeBoardList}">
+				
+				                <div class="list-group-item px-0 py-3">
+				
+				                    <div class="d-flex
+				                                justify-content-between
+				                                align-items-center
+				                                gap-3">
+				
+				                        <div>
+				                            <strong class="d-block mb-1">
+				                                <c:out value="${cafeBoard.boardName}"/>
+				                            </strong>
+				
+				                            <span class="small text-muted">
+				                                읽기:
+				                                <c:out value="${cafeBoard.readRole}"/>
+				
+				                                · 쓰기:
+				                                <c:out value="${cafeBoard.writeRole}"/>
+				                            </span>
+				                        </div>
+				
+				                        <div class="d-flex
+										            align-items-center
+										            flex-wrap
+										            gap-2">
+										
+										    <c:choose>
+										
+										        <c:when test="${cafeBoard.boardType eq 'NOTICE'}">
+										            <span class="badge text-bg-success">
+										                공지
+										            </span>
+										        </c:when>
+										
+										        <c:otherwise>
+										            <span class="badge text-bg-light">
+										                일반
+										            </span>
+										        </c:otherwise>
+										
+										    </c:choose>
+										
+										    <c:if test="${not empty pageContext.request.userPrincipal
+										                  and pageContext.request.userPrincipal.name
+										                      eq cafe.ownerUsername}">
+										
+										        <a href="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/boards/${cafeBoard.cafeBoardId}/modify"
+										           class="btn btn-sm btn-outline-secondary">
+										            관리
+										        </a>
+										
+										    </c:if>
+										
+										</div>
+				
+				                    </div>
+				                </div>
+				
+				            </c:forEach>
+				
+				        </div>
+				
+				    </c:otherwise>
+				
+				</c:choose>
 
             </section>
         </div>

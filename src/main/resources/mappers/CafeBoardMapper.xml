@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.oti.mapper.CafeBoardMapper">
+
+    <select id="selectByCafeId"
+            resultType="kr.or.oti.domain.CafeBoardVO">
+
+        SELECT
+            CAFE_BOARD_ID AS cafeBoardId,
+            CAFE_ID AS cafeId,
+            BOARD_NAME AS boardName,
+            BOARD_TYPE AS boardType,
+            READ_ROLE AS readRole,
+            WRITE_ROLE AS writeRole,
+            DISPLAY_ORDER AS displayOrder,
+            STATUS,
+            CREATED_AT AS createdAt,
+            UPDATED_AT AS updatedAt
+        FROM CAFE_BOARD
+        WHERE CAFE_ID = #{cafeId}
+          AND STATUS = 'ACTIVE'
+        ORDER BY
+            DISPLAY_ORDER ASC,
+            CAFE_BOARD_ID ASC
+
+    </select>
+    
+    <select id="selectOne"
+        resultType="kr.or.oti.domain.CafeBoardVO">
+
+	    SELECT
+	        CAFE_BOARD_ID AS cafeBoardId,
+	        CAFE_ID AS cafeId,
+	        BOARD_NAME AS boardName,
+	        BOARD_TYPE AS boardType,
+	        READ_ROLE AS readRole,
+	        WRITE_ROLE AS writeRole,
+	        DISPLAY_ORDER AS displayOrder,
+	        STATUS,
+	        CREATED_AT AS createdAt,
+	        UPDATED_AT AS updatedAt
+	    FROM CAFE_BOARD
+	    WHERE CAFE_ID = #{cafeId}
+	      AND CAFE_BOARD_ID = #{cafeBoardId}
+	      AND STATUS = 'ACTIVE'
+	
+	</select>
+    
+    <insert id="insertOne">
+	    <selectKey
+	        keyProperty="cafeBoardId"
+	        resultType="long"
+	        order="BEFORE">
+	
+	        SELECT SEQ_CAFE_BOARD.NEXTVAL
+	        FROM DUAL
+	    </selectKey>
+	
+	    INSERT INTO CAFE_BOARD
+	    (
+	        CAFE_BOARD_ID,
+	        CAFE_ID,
+	        BOARD_NAME,
+	        BOARD_TYPE,
+	        READ_ROLE,
+	        WRITE_ROLE,
+	        DISPLAY_ORDER
+	    )
+	    VALUES
+	    (
+	        #{cafeBoardId},
+	        #{cafeId},
+	        #{boardName},
+	        #{boardType},
+	        #{readRole},
+	        #{writeRole},
+	        #{displayOrder}
+	    )
+	</insert>
+	
+	<update id="updateOne">
+
+	    UPDATE CAFE_BOARD
+	    SET
+	        BOARD_NAME = #{boardName},
+	        BOARD_TYPE = #{boardType},
+	        READ_ROLE = #{readRole},
+	        WRITE_ROLE = #{writeRole},
+	        DISPLAY_ORDER = #{displayOrder},
+	        UPDATED_AT = SYSDATE
+	    WHERE CAFE_ID = #{cafeId}
+	      AND CAFE_BOARD_ID = #{cafeBoardId}
+	      AND STATUS = 'ACTIVE'
+	
+	</update>
+	
+	<update id="deleteOne">
+
+	    UPDATE CAFE_BOARD
+	    SET
+	        STATUS = 'DELETED',
+	        UPDATED_AT = SYSDATE
+	    WHERE CAFE_ID = #{cafeId}
+	      AND CAFE_BOARD_ID = #{cafeBoardId}
+	      AND STATUS = 'ACTIVE'
+	
+	</update>
+	
+</mapper>

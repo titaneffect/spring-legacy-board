@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import kr.or.oti.exception.BoardNotFoundException;
+import kr.or.oti.exception.CafeBoardNotFoundException;
 import kr.or.oti.exception.CafeNotFoundException;
 import kr.or.oti.exception.ReplyNotFoundException;
 
@@ -20,6 +21,14 @@ public class GlobalExceptionHandler {
 		model.addAttribute("message", exception.getMessage());
 		model.addAttribute("exceptionName", "404 NOT FOUND");
 		return "error/exception";
+	}
+	
+	@ExceptionHandler(CafeBoardNotFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public String handleCafeBoardNotFound(CafeBoardNotFoundException exception, Model model) {
+	    model.addAttribute("message", exception.getMessage());
+	    model.addAttribute("exceptionName", "404 NOT FOUND");
+	    return "error/exception";
 	}
 	
 	@ExceptionHandler(BoardNotFoundException.class)
