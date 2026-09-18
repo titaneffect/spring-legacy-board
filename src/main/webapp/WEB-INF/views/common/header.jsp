@@ -10,17 +10,13 @@
 
         <!-- 프로젝트 로고 -->
         <a class="cafe-service-logo"
-           href="${pageContext.request.contextPath}/board/list">
+           href="${pageContext.request.contextPath}/cafe">
             DEEP STUDY
         </a>
 
         <!-- 우측 메뉴 -->
         <nav class="cafe-utility-menu"
              aria-label="사용자 메뉴">
-
-            <a href="${pageContext.request.contextPath}/board/list">
-                카페홈
-            </a>
 
             <c:choose>
 
@@ -43,10 +39,6 @@
                     <span class="cafe-login-user">
                         ${pageContext.request.userPrincipal.name}
                     </span>
-
-                    <a href="${pageContext.request.contextPath}/board/register">
-                        새글
-                    </a>
 
                     <form class="cafe-logout-form"
                           method="post"

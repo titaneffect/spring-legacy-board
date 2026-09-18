@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="kr.or.oti.mapper.CafeMemberMapper">
+	<select id="selectOne" resultType="kr.or.oti.domain.CafeMemberVO">
+		SELECT
+			CAFE_MEMBER_ID AS cafeMemberId,
+			CAFE_ID AS cafeId,
+			MEMBER_USERNAME AS memberUsername,
+			CAFE_ROLE AS cafeRole,
+			STATUS,
+			JOINED_AT AS joinedAt
+		FROM CAFE_MEMBER
+		WHERE CAFE_ID = #{cafeId}
+			AND MEMBER_USERNAME = #{memberUsername}
+	</select>
+	
+	<insert id="insertOne">
+		INSERT INTO CAFE_MEMBER
+		(
+			CAFE_MEMBER_ID,
+			CAFE_ID,
+			MEMBER_USERNAME,
+			CAFE_ROLE
+		)
+		VALUES
+		(
+			SEQ_CAFE_MEMBER.NEXTVAL,
+			#{cafeId},
+			#{memberUsername},
+			#{cafeRole}
+		)
+	</insert>
+</mapper>

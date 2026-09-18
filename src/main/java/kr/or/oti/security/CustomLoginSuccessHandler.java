@@ -30,7 +30,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 			return;
 		}
 		
-		response.sendRedirect(request.getContextPath() + "/board/list");
+		response.sendRedirect(request.getContextPath() + "/cafe");
 		
 	}
 }

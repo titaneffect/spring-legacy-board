@@ -41,7 +41,7 @@ public class ReplyServiceImpl implements ReplyService{
 		ReplyVO replyVO = DTOtoVO(replyDTO);
 		int result = replyMapper.insertOne(replyVO);
 		
-		if(result == 0) {
+		if(result != 1) {
 			throw new ReplyNotFoundException(replyDTO.getRno());
 		}
 	}
@@ -51,7 +51,7 @@ public class ReplyServiceImpl implements ReplyService{
 		ReplyVO replyVO = DTOtoVO(replyDTO);
 		int result = replyMapper.updateOne(replyVO);
 		
-		if(result == 0) {
+		if(result != 1) {
 			throw new ReplyNotFoundException(replyDTO.getRno());
 		}
 	}
@@ -60,12 +60,12 @@ public class ReplyServiceImpl implements ReplyService{
 	public void remove(Long rno) {
 		int result = replyMapper.deleteOne(rno);
 		
-		if(result == 0) {
+		if(result != 1) {
 			throw new ReplyNotFoundException(rno);
 		}
 	}
 	
-	public ReplyDTO VOtoDTO(ReplyVO replyVO) {
+	private ReplyDTO VOtoDTO(ReplyVO replyVO) {
 		return ReplyDTO.builder()
 				.rno(replyVO.getRno())
 				.bno(replyVO.getBno())
@@ -76,7 +76,7 @@ public class ReplyServiceImpl implements ReplyService{
 				.build();
 	}
 	
-	public ReplyVO DTOtoVO(ReplyDTO replyDTO) {
+	private ReplyVO DTOtoVO(ReplyDTO replyDTO) {
 		return ReplyVO.builder()
 				.rno(replyDTO.getRno())
 				.bno(replyDTO.getBno())

@@ -51,7 +51,7 @@ public class BoardServiceImpl implements BoardService {
 		BoardVO boardVO = DTOtoVO(boardDTO);
 		int result = boardMapper.insertOne(boardVO);
 		
-		if(result == 0) {
+		if(result != 1) {
 			throw new IllegalStateException("게시글 등록에 실패했습니다.");
 		}
 		
@@ -63,7 +63,7 @@ public class BoardServiceImpl implements BoardService {
 		BoardVO boardVO = DTOtoVO(boardDTO);
 		int result = boardMapper.updateOne(boardVO);
 		
-		if(result == 0) {
+		if(result != 1) {
 			throw new BoardNotFoundException(boardDTO.getBno());
 		}
 	}
@@ -80,7 +80,7 @@ public class BoardServiceImpl implements BoardService {
 		// 게시글 삭제
 		int result = boardMapper.deleteOne(bno);
 		
-		if(result == 0) {
+		if(result != 1) {
 			throw new BoardNotFoundException(bno);
 		}
 	}

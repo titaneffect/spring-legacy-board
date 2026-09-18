@@ -123,8 +123,8 @@
             </div>
 
             <a class="cafe-auth-back"
-               href="${pageContext.request.contextPath}/board/list">
-                게시판으로 돌아가기
+               href="${pageContext.request.contextPath}/cafe">
+                커뮤니티 홈으로 돌아가기
             </a>
 
         </section>

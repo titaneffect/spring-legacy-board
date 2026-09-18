@@ -47,14 +47,14 @@ public class MemberServiceImpl implements MemberService {
 				
 	}
 	
-	public MemberDTO VOtoDTO(MemberVO memberVO) {
+	private MemberDTO VOtoDTO(MemberVO memberVO) {
 		return MemberDTO.builder()
 				.username(memberVO.getUsername())
 				.password(memberVO.getPassword())
 				.build();
 	}
 	
-	public MemberVO DTOtoVO(MemberDTO memberDTO) {
+	private MemberVO DTOtoVO(MemberDTO memberDTO) {
 		return MemberVO.builder()
 				.username(memberDTO.getUsername())
 				.password(passwordEncoder.encode(memberDTO.getPassword()))

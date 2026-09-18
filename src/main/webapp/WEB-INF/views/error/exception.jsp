@@ -60,7 +60,7 @@
                 </button>
 
                 <a class="btn cafe-primary-button"
-                   href="${pageContext.request.contextPath}/board/list">
+                   href="${pageContext.request.contextPath}/cafe">
                     카페 홈
                 </a>
 

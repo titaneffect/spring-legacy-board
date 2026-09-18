@@ -68,7 +68,7 @@ public class BoardAttachServiceImpl implements BoardAttachService {
 		
 		int result = boardAttachMapper.deleteOne(ano);
 		
-		if(result == 0) {
+		if(result != 1) {
 			throw new IllegalStateException("첨부파일 삭제에 실패했습니다.");
 		}
 		
@@ -83,7 +83,7 @@ public class BoardAttachServiceImpl implements BoardAttachService {
 		for(BoardAttachDTO attach : attachList) {
 			int result = boardAttachMapper.deleteOne(attach.getAno());
 			
-			if(result == 0) {
+			if(result != 1) {
 				throw new IllegalStateException("첨부파일 삭제에 실패했습니다.");
 			}
 			
@@ -91,7 +91,7 @@ public class BoardAttachServiceImpl implements BoardAttachService {
 		}
 	}
 	
-	public BoardAttachDTO VOtoDTO(BoardAttachVO boardAttachVO) {
+	private BoardAttachDTO VOtoDTO(BoardAttachVO boardAttachVO) {
 		return BoardAttachDTO.builder()
 				.ano(boardAttachVO.getAno())
 				.bno(boardAttachVO.getBno())

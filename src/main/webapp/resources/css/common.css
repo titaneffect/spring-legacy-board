@@ -101,7 +101,7 @@ body {
     min-height: calc(100vh - 42px);
 }
 
-/* 첨부파일과 댓글 */
+/* 공통 게시글 본문과 첨부 이미지 */
 
 .board-content {
     min-height: 240px;
@@ -114,10 +114,6 @@ body {
 
     object-fit: cover;
     border-radius: 6px;
-}
-
-.reply-item {
-    margin-bottom: 16px;
 }
 
 /* 모바일 */
@@ -512,7 +508,7 @@ body {
     color: #ffffff;
 }
 
-/* 댓글 */
+/* 댓글 영역 */
 
 .cafe-reply-heading {
     padding-bottom: 14px;
@@ -521,9 +517,12 @@ body {
 
 .cafe-reply-heading h2 {
     margin: 0;
+
     font-size: 1.1rem;
     font-weight: 700;
 }
+
+/* 댓글 등록 form */
 
 .cafe-reply-form {
     margin-top: 20px;
@@ -531,48 +530,180 @@ body {
 
     background-color: #f8f9fa;
     border: 1px solid var(--cafe-border);
+    border-radius: 4px;
 }
+
+.cafe-reply-form textarea {
+    resize: vertical;
+}
+
+.cafe-reply-form .form-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+/* 비로그인 안내 */
 
 .cafe-login-guide {
     margin-top: 20px;
     padding: 18px;
 
     display: flex;
+    align-items: center;
     justify-content: space-between;
     gap: 12px;
 
     background-color: #f8f9fa;
     border: 1px solid var(--cafe-border);
+    border-radius: 4px;
+
+    color: var(--cafe-text-light);
+    font-size: 0.9rem;
 }
 
 .cafe-login-guide a {
+    flex-shrink: 0;
+
     color: var(--cafe-green);
     font-weight: 700;
     text-decoration: none;
 }
 
+.cafe-login-guide a:hover {
+    color: var(--cafe-green-dark);
+}
+
+/* 댓글 목록 */
+
 .cafe-reply-list {
     margin-top: 24px;
 }
 
+.reply-empty {
+    padding: 36px 12px;
+
+    color: var(--cafe-text-light);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* 댓글 하나 */
+
 .reply-item {
     margin: 0;
-    padding: 18px 4px;
+    padding: 20px 4px;
+}
 
+/* 두 번째 댓글부터 위쪽 구분선 표시 */
+
+.reply-item + .reply-item {
     border-top: 1px solid var(--cafe-border);
 }
 
-.reply-item details {
-    margin-top: 10px;
+/* 작성자와 날짜 */
+
+.reply-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
 }
 
-.reply-item textarea {
-    width: 100%;
-    margin: 10px 0;
-    padding: 10px;
+.reply-author {
+    color: var(--cafe-text);
+    font-size: 0.9rem;
+    font-weight: 700;
+}
 
+.reply-date {
+    flex-shrink: 0;
+
+    color: var(--cafe-text-light);
+    font-size: 0.8rem;
+}
+
+/* 댓글 내용 */
+
+.reply-content {
+    margin-top: 10px;
+
+    color: var(--cafe-text);
+    font-size: 0.95rem;
+    line-height: 1.6;
+
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+/* 댓글 수정·삭제 버튼 */
+
+.reply-actions {
+    margin-top: 14px;
+
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* details 수정 영역 */
+
+.reply-modify > summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+.reply-modify > summary::-webkit-details-marker {
+    display: none;
+}
+
+.reply-modify[open] {
+    width: 100%;
+}
+
+/* 댓글 수정 form 영역 */
+
+.reply-modify-area {
+    margin-top: 10px;
+    padding: 14px;
+
+    background-color: #f8f9fa;
     border: 1px solid var(--cafe-border);
     border-radius: 4px;
+}
+
+.reply-modify-area textarea {
+    min-height: 90px;
+    margin: 0 0 10px;
+
+    resize: vertical;
+}
+
+/* 댓글 모바일 */
+
+@media (max-width: 576px) {
+    .cafe-login-guide {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .reply-item {
+        padding: 18px 0;
+    }
+
+    .reply-item-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .reply-actions {
+        width: 100%;
+    }
+
+    .reply-modify[open] {
+        flex-basis: 100%;
+    }
 }
 
 /* 상세 화면 모바일 */

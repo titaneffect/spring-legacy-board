@@ -17,6 +17,9 @@
 			access="permitAll" />
 
 		<intercept-url pattern="/" access="permitAll" />
+		<intercept-url pattern="/cafe" access="permitAll" />
+		<intercept-url pattern="/cafe/register" access="hasRole('USER')" />
+		<intercept-url pattern="/cafe/*" access="permitAll" />
 		<intercept-url pattern="/board/list" access="permitAll" />
 		<intercept-url pattern="/board/read" access="permitAll" />
 		<intercept-url pattern="/api/replies"

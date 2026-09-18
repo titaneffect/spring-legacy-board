@@ -233,9 +233,6 @@
     </main>
 
     <!-- 기존 댓글 JavaScript를 이 위치에 그대로 유지 -->
-	<h3>댓글</h3>
-	<div id="replyListArea"></div>
-	
 	<script>
  		const contextPath = '${pageContext.request.contextPath}';
  		const bno = '${board.bno}';
@@ -262,13 +259,33 @@
  			});
  		}
  		
+ 		function formatReplyDate(value){
+ 			if(!value){
+ 				return '';
+ 			}
+ 			
+ 			if(Array.isArray(value)){
+ 				const year = value[0];
+ 				const month = String(value[1]).padStart(2,'0');
+ 				const day = String(value[2]).padStart(2,'0');
+ 				const hour = String(value[3] || 0).padStart(2, '0');
+ 				const minute = String(value[4] || 0).padStart(2, '0');
+ 				
+ 				return year + '.' + month + '.' + day + ' ' + hour + ":" + minute;
+ 			}
+ 			
+ 			return String(value).replace('T', ' ').substring(0, 16);
+ 		}
+ 		
  		function renderReplies(replyList){
  			const replyListArea = document.querySelector('#replyListArea');
  			
  			replyListArea.innerHTML = '';
  			
  			if(replyList.length == 0){
- 				const message = document.createElement('p');
+ 				const message = document.createElement('div');
+ 				message.className =
+ 		            'reply-empty text-center text-muted';
  				message.textContent = '등록한 댓글이 없습니다';
  				
  				replyListArea.appendChild(message);
@@ -276,68 +293,88 @@
  			}
  			
  			replyList.forEach(reply => {
- 				const replyBox = document.createElement('div');
- 				replyBox.classList.add('reply-item');
+ 				const replyBox = document.createElement('article');
+ 				replyBox.className = 'reply-item';
  				
- 				const textBox = document.createElement('div');
+ 				const header = document.createElement('div');
+ 				header.className = 'reply-item-header';
  				
- 				const number = document.createElement('div');
- 				number.textContent = reply.rno + '. ';
+ 				// 작성자와 날짜 영역
+ 				const replyer = document.createElement('strong');
+ 				replyer.className = 'reply-author';
+ 				replyer.textContent = reply.replyer;
  				
+ 				const date = document.createElement('span');
+ 				date.className = 'reply-date';
+ 				
+ 				const dateValue = reply.modDate || reply.regDate;
+ 				date.textContent = formatReplyDate(dateValue);
+ 				
+ 				header.appendChild(replyer);
+ 				header.appendChild(date);
+ 				
+ 				// 댓글 내용
  				const content = document.createElement('div');
+ 				content.className = 'reply-content';
  				content.textContent = reply.reply;
  				
- 				const replyer = document.createElement('div');
- 				replyer.textContent = '작성자: ' + reply.replyer;
+ 				replyBox.appendChild(header);
+ 				replyBox.appendChild(content);
  				
- 				const date = document.createElement('div');
- 				date.textContent = '수정일: ' + (reply.modDate || reply.regDate || '');
- 				
- 				textBox.appendChild(number);
- 				textBox.appendChild(content);
- 				
- 				replyBox.appendChild(textBox);
- 				replyBox.appendChild(replyer);
- 				replyBox.appendChild(date);
- 				
+ 				// 자신의 댓글에만 수정,삭제 표시
  				if(loginUsername !== '' && loginUsername === reply.replyer){
+ 					const actions = document.createElement('div');
+ 					actions.className = 'reply-actions';
  					
  					const modifyDetails = document.createElement('details');
+ 					modifyDetails.className = 'reply-modify';
  					
  					const modifySummary = document.createElement('summary');
+ 					modifySummary.className = 'btn btn-sm btn-outline-secondary';
  					modifySummary.textContent = '수정'; 
  					
+ 					const modifyArea = document.createElement('div');
+ 					modifyArea.className = 'reply-modify-area';
+ 					
  					const modifyInput = document.createElement('textarea');
+ 					modifyInput.className = 'form-control';
+ 					modifyInput.rows = 3;
  					modifyInput.value = reply.reply;
  					
  					const modifyButton = document.createElement('button');
  					modifyButton.type = 'button';
+ 					modifyButton.className = 'btn btn-sm cafe-primary-button';
  					modifyButton.textContent = '수정완료';
+ 					
+ 					modifyButton.addEventListener(
+ 	 						'click',
+ 	 						function(){
+ 	 							modifyReply(reply.rno, modifyInput);
+ 	 						}
+ 	 				);
+ 					
+ 					modifyArea.appendChild(modifyInput);
+ 					modifyArea.appendChild(modifyButton);
+ 					
+ 					modifyDetails.appendChild(modifySummary);
+ 					modifyDetails.appendChild(modifyArea);
  					
  					const deleteButton = document.createElement('button');
  					deleteButton.type = 'button';
+ 					deleteButton.className = 'btn btn-sm btn-outline-danger';
  					deleteButton.textContent = '삭제';
-					
- 					modifyButton.addEventListener(
- 						'click',
- 						function(){
- 							modifyReply(reply.rno, modifyInput);
- 						}
- 					);
  					
  					deleteButton.addEventListener(
- 						'click',
- 						function(){
- 							deleteReply(reply.rno);
- 						}
- 					)
+ 	 						'click',
+ 	 						function(){
+ 	 							deleteReply(reply.rno);
+ 	 						}
+ 	 				);
  					
- 					modifyDetails.appendChild(modifySummary);
- 					modifyDetails.appendChild(modifyInput);
- 					modifyDetails.appendChild(modifyButton);
- 					replyBox.appendChild(modifyDetails);
- 					
- 					replyBox.appendChild(deleteButton);
+ 					actions.appendChild(modifyDetails);
+ 					actions.appendChild(deleteButton);
+					
+ 					replyBox.appendChild(actions);
  				}
  				
  				replyListArea.appendChild(replyBox);
