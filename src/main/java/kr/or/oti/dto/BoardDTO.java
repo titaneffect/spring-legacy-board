@@ -19,6 +19,8 @@ public class BoardDTO {
 
     private Long bno;
     
+    private Long cafeBoardId;
+    
     @NotBlank(message = "제목을 입력하세요.")
     private String title;
     

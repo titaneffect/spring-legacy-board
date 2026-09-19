@@ -47,11 +47,19 @@
 
                     <form method="post"
                           enctype="multipart/form-data"
-                          action="${pageContext.request.contextPath}/board/register">
+                          action="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post/register">
 
                         <input type="hidden"
                                name="${_csrf.parameterName}"
                                value="${_csrf.token}">
+                               
+                        <input type="hidden"
+                        	   name="cafeId"
+                        	   value="${cafeId}">
+                        	   
+                        <input type="hidden"
+                        	   name="cafeBoardId"
+                        	   value="${cafeBoard.cafeBoardId}">
 
                         <%--
                             @Valid 실행 시 writer 검증을 통과하기 위해 필요하다.
@@ -73,7 +81,7 @@
                                    type="text"
                                    id="title"
                                    name="title"
-                                   value="${board.title}"
+                                   value="${fn:escapeXml(board.title)}"
                                    placeholder="제목을 입력하세요">
 
                         </div>
@@ -89,7 +97,7 @@
                             <textarea class="form-control cafe-content-input"
                                       id="content"
                                       name="content"
-                                      placeholder="내용을 입력하세요">${board.content}</textarea>
+                                      placeholder="내용을 입력하세요"><c:out value="${board.content}"/></textarea>
 
                         </div>
 
@@ -143,7 +151,7 @@
                         <div class="cafe-form-actions">
 
                             <a class="btn btn-outline-secondary"
-                               href="${pageContext.request.contextPath}/board/list">
+                               href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post">
                                 취소
                             </a>
 

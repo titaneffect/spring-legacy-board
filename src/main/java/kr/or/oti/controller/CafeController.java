@@ -123,7 +123,7 @@ public class CafeController {
 	
 	
 	
-	@GetMapping("/{cafeId:\\d+}/boards/register")
+	@GetMapping("/{cafeId:\\d+}/board/register")
 	public String registerCafeBoard(@PathVariable("cafeId") Long cafeId, Model model, Principal principal) {
 
 		CafeDTO cafeDTO = cafeService.get(cafeId);
@@ -145,7 +145,7 @@ public class CafeController {
 		return "cafe/board/register";
 	}
 
-	@PostMapping("/{cafeId:\\d+}/boards/register")
+	@PostMapping("/{cafeId:\\d+}/board/register")
 	public String registerCafeBoard(@PathVariable("cafeId") Long cafeId,
 			@Valid @ModelAttribute("cafeBoard") CafeBoardDTO cafeBoardDTO, BindingResult bindingResult, Model model,
 			Principal principal) {
@@ -181,7 +181,7 @@ public class CafeController {
 		return "redirect:/cafe/" + cafeId;
 	}
 	
-	@GetMapping("/{cafeId:\\d+}/boards/{cafeBoardId:\\d+}/modify")
+	@GetMapping("/{cafeId:\\d+}/board/{cafeBoardId:\\d+}/modify")
 	public String modifyCafeBoard(
 	        @PathVariable("cafeId") Long cafeId,
 	        @PathVariable("cafeBoardId")
@@ -220,7 +220,7 @@ public class CafeController {
 	    return "cafe/board/modify";
 	}
 	
-	@PostMapping("/{cafeId:\\d+}/boards/{cafeBoardId:\\d+}/modify")
+	@PostMapping("/{cafeId:\\d+}/board/{cafeBoardId:\\d+}/modify")
 	public String modifyCafeBoard(
 	        @PathVariable("cafeId") Long cafeId,
 	        @PathVariable("cafeBoardId")
@@ -281,7 +281,7 @@ public class CafeController {
 	    return "redirect:/cafe/" + cafeId;
 	}
 
-	@PostMapping("/{cafeId:\\d+}/boards/{cafeBoardId:\\d+}/remove")
+	@PostMapping("/{cafeId:\\d+}/board/{cafeBoardId:\\d+}/remove")
 	public String removeCafeBoard(
 	        @PathVariable("cafeId") Long cafeId,
 	        @PathVariable("cafeBoardId")

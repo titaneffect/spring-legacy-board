@@ -75,7 +75,7 @@
 				                  and pageContext.request.userPrincipal.name
 				                      eq cafe.ownerUsername}">
 				
-				        <a href="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/boards/register"
+				        <a href="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/board/register"
 				           class="btn btn-sm cafe-primary-button">
 				            게시판 만들기
 				        </a>
@@ -107,10 +107,11 @@
 				                                gap-3">
 				
 				                        <div>
-				                            <strong class="d-block mb-1">
-				                                <c:out value="${cafeBoard.boardName}"/>
-				                            </strong>
-				
+				                        	<a href="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/board/${cafeBoard.cafeBoardId}/post">
+					                            <strong class="d-block mb-1">
+					                                <c:out value="${cafeBoard.boardName}"/>
+					                            </strong>
+											</a>
 				                            <span class="small text-muted">
 				                                읽기:
 				                                <c:out value="${cafeBoard.readRole}"/>
@@ -145,7 +146,7 @@
 										                  and pageContext.request.userPrincipal.name
 										                      eq cafe.ownerUsername}">
 										
-										        <a href="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/boards/${cafeBoard.cafeBoardId}/modify"
+										        <a href="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/board/${cafeBoard.cafeBoardId}/modify"
 										           class="btn btn-sm btn-outline-secondary">
 										            관리
 										        </a>

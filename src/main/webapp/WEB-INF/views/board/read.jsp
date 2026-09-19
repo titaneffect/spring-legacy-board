@@ -6,7 +6,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>${board.title}</title>
+	<title><c:out value="${board.title}"/></title>
 	
 	<jsp:include page="/WEB-INF/views/common/styles.jsp"/>
 </head>
@@ -131,7 +131,7 @@
                     <footer class="cafe-post-actions">
 
                         <a class="btn btn-outline-secondary"
-                           href="${pageContext.request.contextPath}/board/list?${pageRequest.link}">
+                           href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post?${pageRequest.link}">
                             목록
                         </a>
 
@@ -139,7 +139,7 @@
                             and pageContext.request.userPrincipal.name eq board.writer}">
 
                             <a class="btn cafe-primary-button"
-                               href="${pageContext.request.contextPath}/board/modify?bno=${board.bno}&${pageRequest.link}">
+                               href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post/${board.bno}/modify?${pageRequest.link}">
                                 수정
                             </a>
 
@@ -196,7 +196,7 @@
                                     댓글을 작성하려면 로그인이 필요합니다.
                                 </span>
 
-                                <a href="${pageContext.request.contextPath}/member/login?bno=${board.bno}">
+                                <a href="${pageContext.request.contextPath}/member/login?cafeId=${cafeId}&cafeBoardId=${cafeBoard.cafeBoardId}&bno=${board.bno}">
                                     로그인
                                 </a>
 

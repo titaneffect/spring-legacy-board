@@ -46,7 +46,7 @@
                 <form:form
                     method="post"
                     modelAttribute="cafeBoard"
-                    action="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/boards/register">
+                    action="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/board/register">
 
                     <form:hidden path="displayOrder"/>
 

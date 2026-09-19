@@ -23,7 +23,7 @@ public class CafeMemberVO {
 	
 	private CafeRole cafeRole;
 	
-	private String status;
+	private CafeMemberStatus status;
 	
 	private LocalDateTime joinedAt;
 }

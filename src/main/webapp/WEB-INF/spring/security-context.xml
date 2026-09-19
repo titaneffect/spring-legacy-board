@@ -11,22 +11,30 @@
         https://www.springframework.org/schema/security/spring-security.xsd">
 
 	<http>
-		<intercept-url pattern="/resources/**"
-			access="permitAll" />
-		<intercept-url pattern="/.well-known/**"
-			access="permitAll" />
+		<intercept-url pattern="/resources/**" access="permitAll" />
+		<intercept-url pattern="/.well-known/**" access="permitAll" />
+			
+		<intercept-url pattern="/member/login" access="permitAll" />
+		<intercept-url pattern="/member/register" access="permitAll" />
 
 		<intercept-url pattern="/" access="permitAll" />
 		<intercept-url pattern="/cafe" access="permitAll" />
 		<intercept-url pattern="/cafe/register" access="hasRole('USER')" />
 		<intercept-url pattern="/cafe/*" access="permitAll" />
-		<intercept-url pattern="/board/list" access="permitAll" />
-		<intercept-url pattern="/board/read" access="permitAll" />
-		<intercept-url pattern="/api/replies"
-			method="GET" access="permitAll" />
-		<intercept-url pattern="/member/login" access="permitAll" />
-		<intercept-url pattern="/member/register" access="permitAll" />
+		<intercept-url pattern="/cafe/*/board" access="permitAll" />
+		
+		<!-- 로그인 필요 -->
+		<intercept-url pattern="/cafe/*/board/*/post/register" access="hasRole('USER')" />
+		<intercept-url pattern="/cafe/*/board/*/post/*/modify" access="hasRole('USER')" />
+		<intercept-url pattern="/cafe/*/board/*/post/*/remove" access="hasRole('USER')" />
+		
+		<!-- 게시글 목록과 조회는 비회원 허용 -->
+		<intercept-url pattern="/cafe/*/board/*/post" method="GET" access="permitAll" />
+		<intercept-url pattern="/cafe/*/board/*/post/*" method="GET" access="permitAll" />
+		
+		<intercept-url pattern="/api/replies" method="GET" access="permitAll" />
 		<intercept-url pattern="/attachments/**" access="permitAll" />
+		
 		<intercept-url pattern="/admin/**" access="hasRole('ADMIN')" />
 		
 		<intercept-url pattern="/**" access="hasRole('USER')" />

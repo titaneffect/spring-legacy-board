@@ -43,22 +43,22 @@
 
         <div class="row g-4 mt-1">
 
-            <!-- 게시글 -->
+            <!-- 카페 관리 -->
             <div class="col-md-6">
 
                 <section class="cafe-admin-card">
 
                     <h2>
-                        게시글
+                        카페 관리
                     </h2>
 
                     <p>
-                        등록된 게시글을 확인할 수 있습니다.
+                        등록된 카페를 확인할 수 있습니다.
                     </p>
 
                     <a class="btn cafe-primary-button"
-                       href="${pageContext.request.contextPath}/board/list">
-                        게시글 목록
+                       href="${pageContext.request.contextPath}/cafe">
+                       카페 목록
                     </a>
 
                 </section>

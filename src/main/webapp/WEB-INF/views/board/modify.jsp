@@ -6,7 +6,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>${board.title} 수정</title>
+	<title><c:out value="${board.title}"/> 수정</title>
 	
 	<jsp:include page="/WEB-INF/views/common/styles.jsp"/>
 </head>
@@ -48,7 +48,7 @@
                     <form id="modifyForm"
                           method="post"
                           enctype="multipart/form-data"
-                          action="${pageContext.request.contextPath}/board/modify">
+                          action="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post/${board.bno}/modify">
 
                         <input type="hidden"
                                name="${_csrf.parameterName}"
@@ -217,7 +217,7 @@
                         <div class="cafe-form-actions">
 
                             <a class="btn btn-outline-secondary"
-                               href="${pageContext.request.contextPath}/board/read?bno=${board.bno}&${pageRequest.link}">
+                               href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post/${board.bno}?${pageRequest.link}">
                                 취소
                             </a>
 
@@ -244,7 +244,7 @@
                     </div>
 
                     <form method="post"
-                          action="${pageContext.request.contextPath}/board/remove"
+                          action="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post/${board.bno}/remove"
                           onsubmit="return confirm('게시글을 삭제하시겠습니까?');">
 
                         <input type="hidden"

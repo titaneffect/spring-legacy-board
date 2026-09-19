@@ -9,6 +9,7 @@
 	<select id="selectPage" resultType="kr.or.oti.domain.BoardVO">
 		SELECT
             BNO,
+            CAFE_BOARD_ID AS cafeBoardId,
             TITLE,
             CONTENT,
             WRITER,
@@ -17,24 +18,29 @@
         FROM BOARD
         
         <where>
-        	<if test="keyword != null and keyword != ''">
+        	CAFE_BOARD_ID = #{cafeBoardId}
+        	
+        	<if test="pageRequest.keyword != null and pageRequest.keyword != ''">
+        	
+        		AND
+        		
         		<choose>
-        			<when test='type == "T"'>
-        				TITLE LIKE '%' || #{keyword} || '%'
+        			<when test='pageRequest.type == "T"'>
+        				TITLE LIKE '%' || #{pageRequest.keyword} || '%'
         			</when>
-        			<when test='type == "W"'>
-        				WRITER LIKE '%' || #{keyword} || '%'
+        			<when test='pageRequest.type == "W"'>
+        				WRITER LIKE '%' || #{pageRequest.keyword} || '%'
         			</when>
-        			<when test='type == "C"'>
-        				CONTENT LIKE '%' || #{keyword} || '%'
+        			<when test='pageRequest.type == "C"'>
+        				CONTENT LIKE '%' || #{pageRequest.keyword} || '%'
         			</when>
         		</choose> 		
         	</if>
         </where>
         
         ORDER BY BNO DESC
-        OFFSET #{skip} ROWS
-        FETCH NEXT #{size} ROWS ONLY
+        OFFSET #{pageRequest.skip} ROWS
+        FETCH NEXT #{pageRequest.size} ROWS ONLY
 	</select>
 	
 	<select id="selectTotalCount" resultType="int">
@@ -43,16 +49,21 @@
 		FROM BOARD
 		
 		<where>
-        	<if test="keyword != null and keyword != ''">
+			CAFE_BOARD_ID = #{cafeBoardId}
+			
+        	<if test="pageRequest.keyword != null and pageRequest.keyword != ''">
+        	
+        		AND
+        	
         		<choose>
-        			<when test='type == "T"'>
-        				TITLE LIKE '%' || #{keyword} || '%'
+        			<when test='pageRequest.type == "T"'>
+        				TITLE LIKE '%' || #{pageRequest.keyword} || '%'
         			</when>
-        			<when test='type == "W"'>
-        				WRITER LIKE '%' || #{keyword} || '%'
+        			<when test='pageRequest.type == "W"'>
+        				WRITER LIKE '%' || #{pageRequest.keyword} || '%'
         			</when>
-        			<when test='type == "C"'>
-        				CONTENT LIKE '%' || #{keyword} || '%'
+        			<when test='pageRequest.type == "C"'>
+        				CONTENT LIKE '%' || #{pageRequest.keyword} || '%'
         			</when>
         		</choose> 
         	</if>
@@ -62,6 +73,7 @@
 	<select id="selectOne" resultType="kr.or.oti.domain.BoardVO">
 		SELECT
 			BNO,
+			CAFE_BOARD_ID AS cafeBoardId,
 			TITLE,
 			CONTENT,
 			WRITER,
@@ -78,12 +90,14 @@
 		</selectKey>
 		INSERT INTO BOARD(
 			BNO,
+			CAFE_BOARD_ID,
 			TITLE,
 			CONTENT,
 			WRITER
 		)
 		VALUES (
 			#{bno},
+			#{cafeBoardId},
 			#{title},
 			#{content},
 			#{writer}

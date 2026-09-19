@@ -27,7 +27,8 @@
             <c:when test="${not empty pageContext.request.userPrincipal}">
 
                 <a class="cafe-write-button mt-3"
-                   href="${pageContext.request.contextPath}/board/register">
+                   href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post/register">
+                   
                     카페 글쓰기
                 </a>
 
@@ -35,8 +36,7 @@
 
             <c:otherwise>
 
-                <a class="cafe-write-button mt-3"
-                   href="${pageContext.request.contextPath}/member/login">
+                <a class="cafe-write-button mt-3" href="${pageContext.request.contextPath}/member/login?cafeId=${cafeId}&cafeBoardId=${cafeBoard.cafeBoardId}">
                     로그인하고 글쓰기
                 </a>
 
@@ -53,7 +53,7 @@
         </h2>
 
         <a class="cafe-sidebar-link active"
-           href="${pageContext.request.contextPath}/board/list">
+           href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post">
             전체글보기
         </a>
 

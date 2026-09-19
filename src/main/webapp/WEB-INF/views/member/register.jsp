@@ -20,7 +20,7 @@
         <section class="cafe-auth-card">
 
             <a class="cafe-auth-logo"
-               href="${pageContext.request.contextPath}/board/list">
+               href="${pageContext.request.contextPath}/cafe">
                 DEEP STUDY
             </a>
 

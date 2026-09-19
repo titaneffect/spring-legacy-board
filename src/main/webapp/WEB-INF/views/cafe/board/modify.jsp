@@ -45,7 +45,7 @@
                 <form:form
                     method="post"
                     modelAttribute="cafeBoard"
-                    action="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/boards/${cafeBoard.cafeBoardId}/modify">
+                    action="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/board/${cafeBoard.cafeBoardId}/modify">
 
                     <div class="mb-4">
 
@@ -189,7 +189,7 @@
                 </div>
 
                 <form method="post"
-                      action="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/boards/${cafeBoard.cafeBoardId}/remove"
+                      action="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/board/${cafeBoard.cafeBoardId}/remove"
                       onsubmit="return confirm('정말 이 게시판을 삭제하시겠습니까?');">
 
                     <input type="hidden"

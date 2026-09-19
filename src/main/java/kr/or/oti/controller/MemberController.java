@@ -25,10 +25,19 @@ public class MemberController {
 	private final MemberService memberService;
 	
 	@GetMapping("/login")
-	public String login(Long bno, HttpSession session) {
-		if(bno != null) {
-			session.setAttribute("loginReturnBno", bno);
+	public String login(Long cafeId, Long cafeBoardId, Long bno, HttpSession session) {
+		
+		if(cafeId != null && cafeBoardId != null) {
+			session.setAttribute("loginReturnCafeId", cafeId);
+			session.setAttribute("loginReturnCafeBoardId", cafeBoardId);
+			
+			if (bno != null) {
+				session.setAttribute("loginReturnBno", bno);
+			} else {
+				session.removeAttribute("loginReturnBno");
+			}
 		}
+		
 		return "member/login";
 	}
 	

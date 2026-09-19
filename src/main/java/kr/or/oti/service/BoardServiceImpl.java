@@ -24,13 +24,13 @@ public class BoardServiceImpl implements BoardService {
 	private final BoardAttachService boardAttachService;
 	
 	@Override
-	public PageResponseDTO<BoardDTO> getList(PageRequestDTO pageRequestDTO){
-		List<BoardDTO> dtoList = boardMapper.selectPage(pageRequestDTO)
+	public PageResponseDTO<BoardDTO> getList(Long cafeBoardId, PageRequestDTO pageRequestDTO){
+		List<BoardDTO> dtoList = boardMapper.selectPage(cafeBoardId, pageRequestDTO)
 			.stream()
 			.map(this::VOtoDTO)
 			.collect(Collectors.toList());
 		
-		int total = boardMapper.selectTotalCount(pageRequestDTO);
+		int total = boardMapper.selectTotalCount(cafeBoardId, pageRequestDTO);
 		
 		return new PageResponseDTO<>(pageRequestDTO, dtoList, total);
 	}
@@ -88,6 +88,7 @@ public class BoardServiceImpl implements BoardService {
 	private BoardDTO VOtoDTO(BoardVO boardVO) {
 		return BoardDTO.builder()
 				.bno(boardVO.getBno())
+				.cafeBoardId(boardVO.getCafeBoardId())
 				.title(boardVO.getTitle())
 				.content(boardVO.getContent())
 				.writer(boardVO.getWriter())
@@ -99,6 +100,7 @@ public class BoardServiceImpl implements BoardService {
 	private BoardVO DTOtoVO(BoardDTO boardDTO) {
 		return BoardVO.builder()
 				.bno(boardDTO.getBno())
+				.cafeBoardId(boardDTO.getCafeBoardId())
 				.title(boardDTO.getTitle())
 				.content(boardDTO.getContent())
 				.writer(boardDTO.getWriter())

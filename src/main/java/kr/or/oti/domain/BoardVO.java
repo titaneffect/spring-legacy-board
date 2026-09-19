@@ -13,6 +13,8 @@ public class BoardVO {
 	
 	private Long bno;
 	
+	private Long cafeBoardId;
+	
 	private String title;
 	
 	private String content;

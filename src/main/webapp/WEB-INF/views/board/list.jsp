@@ -59,7 +59,7 @@
 	                <!-- 검색 -->
 	                <form class="row g-2 mb-4"
 	                      method="get"
-	                      action="${pageContext.request.contextPath}/board/list">
+	                      action="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post">
 	
 	                    <div class="col-sm-3">
 	
@@ -150,8 +150,8 @@
 	
 	                                    <td>
 	                                        <a class="board-title-link"
-	                                           href="${pageContext.request.contextPath}/board/read?bno=${board.bno}&${pageRequest.link}">
-	                                            ${board.title}
+	                                           href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post/${board.bno}?${pageRequest.link}">
+	                                            <c:out value="${board.title}"/>
 	                                        </a>
 	                                    </td>
 	
@@ -195,7 +195,7 @@
 	                            <li class="page-item">
 	
 	                                <a class="page-link"
-	                                   href="${pageContext.request.contextPath}/board/list?page=${pageResponse.start - 1}&size=${pageResponse.size}&type=${pageRequest.type}&keyword=${pageRequest.keyword}">
+	                                   href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post?page=${pageResponse.start - 1}&size=${pageResponse.size}&type=${pageRequest.type}&keyword=${pageRequest.keyword}">
 	                                    이전
 	                                </a>
 	
@@ -220,7 +220,7 @@
 	                                    <li class="page-item">
 	
 	                                        <a class="page-link"
-	                                           href="${pageContext.request.contextPath}/board/list?page=${pageNum}&size=${pageResponse.size}&type=${pageRequest.type}&keyword=${pageRequest.keyword}">
+	                                           href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post?page=${pageNum}&size=${pageResponse.size}&type=${pageRequest.type}&keyword=${pageRequest.keyword}">
 	                                            ${pageNum}
 	                                        </a>
 	
@@ -234,7 +234,7 @@
 	                            <li class="page-item">
 	
 	                                <a class="page-link"
-	                                   href="${pageContext.request.contextPath}/board/list?page=${pageResponse.end + 1}&size=${pageResponse.size}&type=${pageRequest.type}&keyword=${pageRequest.keyword}">
+	                                   href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post?page=${pageResponse.end + 1}&size=${pageResponse.size}&type=${pageRequest.type}&keyword=${pageRequest.keyword}">
 	                                    다음
 	                                </a>
 	
