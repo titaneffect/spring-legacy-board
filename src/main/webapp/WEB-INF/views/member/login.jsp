@@ -121,11 +121,30 @@
                 </a>
 
             </div>
+            
+            <c:choose>
 
-            <a class="cafe-auth-back"
-               href="${pageContext.request.contextPath}/cafe">
-                커뮤니티 홈으로 돌아가기
-            </a>
+			    <%-- 로그아웃 또는 회원가입 완료 후 --%>
+			    <c:when test="${param.logout != null or param.registered != null}">
+			
+			        <a class="cafe-auth-back"
+			           href="${pageContext.request.contextPath}/cafe">
+			            커뮤니티 홈으로 돌아가기
+			        </a>
+			
+			    </c:when>
+			
+			    <%-- 이전 페이지에서 로그인 화면으로 들어온 경우 --%>
+			    <c:otherwise>
+			
+			        <a class="cafe-auth-back"
+			           href="<c:out value='${loginBackUrl}'/>">
+			            이전으로 돌아가기
+			        </a>
+			
+			    </c:otherwise>
+			
+			</c:choose>
 
         </section>
     </main>
