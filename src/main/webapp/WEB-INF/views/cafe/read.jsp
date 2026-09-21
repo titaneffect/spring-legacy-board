@@ -20,16 +20,35 @@
 
 <main class="container py-5">
 
+	<nav class="cafe-breadcrumb"
+	     aria-label="카페 경로">
+	
+	    <a href="${pageContext.request.contextPath}/cafe">
+	        카페 홈
+	    </a>
+	
+	    <span aria-hidden="true">
+	        &rsaquo;
+	    </span>
+	
+	    <strong>
+	        <c:out value="${cafe.cafeName}"/>
+	    </strong>
+	
+	</nav>
+
     <section class="border rounded-3 bg-white p-5 mb-4">
-
-        <div class="small text-success fw-semibold mb-2">
-            CAFE
-        </div>
-
-        <h1 class="display-6 fw-bold mb-3">
-            <c:out value="${cafe.cafeName}"/>
-        </h1>
-
+		
+		<div>
+	        <div class="small text-success fw-semibold mb-2">
+	            CAFE
+	        </div>
+	
+	        <h1 class="display-6 fw-bold mb-3">
+	            <c:out value="${cafe.cafeName}"/>
+	        </h1>
+		</div>
+        
         <p class="lead text-muted mb-4">
             <c:choose>
                 <c:when test="${not empty cafe.description}">
@@ -167,64 +186,105 @@
 				</c:choose>
 
             </section>
+            
         </div>
 
         <div class="col-lg-4">
-            <section class="border rounded-3 bg-white p-4">
 
-                <h2 class="h5 mb-3">카페 정보</h2>
-
-                <dl class="mb-0">
-                    <dt class="small text-muted mb-1">
-                        카페 번호
-                    </dt>
-                    <dd class="mb-3">
-                        <c:out value="${cafe.cafeId}"/>
-                    </dd>
-
-                    <dt class="small text-muted mb-1">
-                        운영자
-                    </dt>
-                    <dd class="mb-0">
-                        <c:out value="${cafe.ownerUsername}"/>
-                    </dd>
-                </dl>
-
-            </section>
-        </div>
-
-    </div>
-
-    <div class="mt-4 d-flex flex-wrap align-items-center gap-2">
-        <a href="${pageContext.request.contextPath}/cafe"
-           class="btn btn-outline-secondary">
-            카페 목록
-        </a>
-        <c:if test="${not empty pageContext.request.userPrincipal
-                  and pageContext.request.userPrincipal.name
-                      eq cafe.ownerUsername}">
-
-	        <a href="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/modify"
-	           class="btn btn-outline-success">
-	            카페 수정
-	        </a>
-	        
-	        <form method="post"
-		          action="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/remove"
-		          class="d-inline"
-		          onsubmit="return confirm('정말 이 카페를 삭제하시겠습니까?');">
+		    <section class="cafe-info-card">
 		
-		        <input type="hidden"
-		               name="${_csrf.parameterName}"
-		               value="${_csrf.token}">
+		        <header class="cafe-info-header">
+		            <span class="cafe-info-eyebrow">
+		                CAFE INFO
+		            </span>
 		
-		        <button type="submit"
-		                class="btn btn-outline-danger">
-		            카페 삭제
-		        </button>
-    		</form>
-    	</c:if>
-    </div>
+		            <h2>카페 정보</h2>
+		        </header>
+		
+		        <div class="cafe-info-list">
+		
+		            <div class="cafe-info-row">
+		                <span class="cafe-info-label">
+		                    카페 번호
+		                </span>
+		
+		                <strong class="cafe-info-value">
+		                    #<c:out value="${cafe.cafeId}"/>
+		                </strong>
+		            </div>
+		
+		            <div class="cafe-info-row">
+		                <span class="cafe-info-label">
+		                    운영자
+		                </span>
+		
+		                <strong class="cafe-info-value">
+		                    <c:out value="${cafe.ownerUsername}"/>
+		                </strong>
+		            </div>
+		
+		        </div>
+		
+		        <c:if test="${not empty pageContext.request.userPrincipal
+		                      and pageContext.request.userPrincipal.name
+		                          eq cafe.ownerUsername}">
+		
+		            <div class="cafe-admin-section">
+		
+		                <div class="cafe-admin-title">
+		                    <span class="cafe-admin-dot"></span>
+		                    운영 관리
+		                </div>
+		
+		                <nav class="cafe-admin-menu">
+		
+		                    <a class="cafe-admin-link"
+		                       href="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/member">
+		
+		                        <span>
+		                            <strong>회원 관리</strong>
+		
+		                            <small>
+		                                가입 회원과 역할을 관리합니다.
+		                            </small>
+		                        </span>
+		
+		                        <span class="cafe-admin-arrow"
+		                              aria-hidden="true">
+		                            &rsaquo;
+		                        </span>
+		
+		                    </a>
+		
+		                    <a class="cafe-admin-link"
+		                       href="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/modify">
+		
+		                        <span>
+		                            <strong>카페 정보 수정</strong>
+		
+		                            <small>
+		                                이름과 소개 정보를 수정합니다.
+		                            </small>
+		                        </span>
+		
+		                        <span class="cafe-admin-arrow"
+		                              aria-hidden="true">
+		                            &rsaquo;
+		                        </span>
+		
+		                    </a>
+		
+		                </nav>
+		
+		            </div>
+		
+		        </c:if>
+		
+		    </section>
+		
+		</div>
+	</div>
+
 </main>
 
 </body>

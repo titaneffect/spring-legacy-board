@@ -4,6 +4,9 @@
 
 <%@ taglib uri="http://www.springframework.org/tags/form"
     prefix="form"%>
+   
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core"
+    prefix="c"%>
 
 <!DOCTYPE html>
 <html>
@@ -98,6 +101,44 @@
                     </div>
 
                 </form:form>
+                
+                <c:if test="${not empty pageContext.request.userPrincipal
+				              and pageContext.request.userPrincipal.name
+				                  eq cafe.ownerUsername}">
+				
+				    <section class="cafe-danger-zone">
+				
+				        <div class="cafe-danger-content">
+				
+				            <div>
+				                <h2>카페 삭제</h2>
+				
+				                <p>
+				                    카페를 삭제하면 더 이상 일반 사용자에게
+				                    표시되지 않습니다.
+				                </p>
+				            </div>
+				
+				            <form method="post"
+				                  action="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/remove"
+				                  onsubmit="return confirm('정말 이 카페를 삭제하시겠습니까?');">
+				
+				                <input type="hidden"
+				                       name="${_csrf.parameterName}"
+				                       value="${_csrf.token}">
+				
+				                <button type="submit"
+				                        class="btn btn-outline-danger cafe-danger-button">
+				                    카페 삭제
+				                </button>
+				
+				            </form>
+				
+				        </div>
+				
+				    </section>
+				
+				</c:if>
 
             </section>
 

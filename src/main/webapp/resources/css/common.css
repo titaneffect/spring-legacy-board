@@ -267,6 +267,44 @@ body {
     color: var(--cafe-green-dark);
 }
 
+/* 카페 상세 경로 */
+
+.cafe-breadcrumb {
+    margin-bottom: 14px;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    color: var(--cafe-text-light);
+    font-size: 0.82rem;
+}
+
+.cafe-breadcrumb a {
+    color: var(--cafe-text-light);
+    text-decoration: none;
+}
+
+.cafe-breadcrumb a:hover {
+    color: var(--cafe-green);
+}
+
+.cafe-breadcrumb span {
+    color: #b8beb9;
+}
+
+.cafe-breadcrumb strong {
+    max-width: 260px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: var(--cafe-text);
+    font-weight: 600;
+}
+
+
 /* 환영 영역 */
 
 .cafe-welcome {
@@ -867,38 +905,6 @@ body {
     background-color: #dc3545;
 }
 
-/* 게시글 삭제 영역 */
-
-.cafe-danger-zone {
-    padding: 20px 24px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-
-    background-color: #ffffff;
-    border: 1px solid #f1b7bc;
-}
-
-.cafe-danger-zone p {
-    margin: 4px 0 0;
-
-    color: var(--cafe-text-light);
-    font-size: 0.85rem;
-}
-
-@media (max-width: 576px) {
-    .cafe-danger-zone {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .cafe-danger-zone form,
-    .cafe-danger-zone button {
-        width: 100%;
-    }
-}
 
 /* 로그인·회원가입 */
 
@@ -1097,4 +1103,222 @@ body {
 
     color: var(--cafe-text-light);
     font-size: 0.9rem;
+}
+
+
+/* 카페 정보 카드 */
+
+.cafe-info-card {
+    padding: 24px;
+
+    background-color: var(--cafe-surface);
+    border: 1px solid var(--cafe-border);
+    border-radius: 8px;
+}
+
+.cafe-info-header {
+    margin-bottom: 20px;
+}
+
+.cafe-info-eyebrow {
+    display: block;
+    margin-bottom: 4px;
+
+    color: var(--cafe-green);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.cafe-info-header h2 {
+    margin: 0;
+
+    color: var(--cafe-text);
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+/* 카페 기본 정보 */
+
+.cafe-info-list {
+    display: grid;
+    gap: 14px;
+}
+
+.cafe-info-row {
+    min-height: 42px;
+    padding: 0 2px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.cafe-info-label {
+    color: var(--cafe-text-light);
+    font-size: 0.85rem;
+}
+
+.cafe-info-value {
+    color: var(--cafe-text);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-align: right;
+}
+
+/* 운영 관리 */
+
+.cafe-admin-section {
+    margin-top: 20px;
+    padding-top: 20px;
+
+    border-top: 1px solid var(--cafe-border);
+}
+
+.cafe-admin-title {
+    margin-bottom: 10px;
+
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    color: var(--cafe-text);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.cafe-admin-dot {
+    width: 7px;
+    height: 7px;
+
+    background-color: var(--cafe-green);
+    border-radius: 50%;
+}
+
+.cafe-admin-menu {
+    display: grid;
+    gap: 6px;
+}
+
+.cafe-admin-link {
+    min-height: 58px;
+    padding: 11px 13px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    background-color: #f8faf9;
+    border: 1px solid transparent;
+    border-radius: 6px;
+
+    color: var(--cafe-text);
+    text-decoration: none;
+
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.15s ease;
+}
+
+.cafe-admin-link:hover {
+    background-color: #edf9f2;
+    border-color: #ccefdc;
+    color: var(--cafe-green-dark);
+
+    transform: translateY(-1px);
+}
+
+.cafe-admin-link strong {
+    display: block;
+
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.cafe-admin-link small {
+    display: block;
+    margin-top: 3px;
+
+    color: var(--cafe-text-light);
+    font-size: 0.75rem;
+}
+
+.cafe-admin-arrow {
+    flex-shrink: 0;
+
+    color: #9ca3af;
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.cafe-admin-link:hover .cafe-admin-arrow {
+    color: var(--cafe-green);
+}
+
+/* 위험 기능 영역 */
+
+.cafe-danger-zone {
+    margin-top: 28px;
+    padding: 22px 24px;
+
+    background-color: #fffafa;
+    border: 1px solid #f2c8cc;
+    border-radius: 8px;
+}
+
+.cafe-danger-content {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.cafe-danger-zone h2 {
+    margin: 0 0 6px;
+
+    color: #b02a37;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.cafe-danger-zone p {
+    margin: 0;
+
+    color: var(--cafe-text-light);
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+.cafe-danger-zone form {
+    flex-shrink: 0;
+    margin: 0 0 0 auto;
+}
+
+.cafe-danger-button {
+    min-width: 112px;
+    padding: 9px 18px;
+
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+@media (max-width: 576px) {
+    .cafe-danger-content {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .cafe-danger-zone form {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .cafe-danger-button {
+        width: 100%;
+    }
 }

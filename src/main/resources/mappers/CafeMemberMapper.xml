@@ -5,6 +5,27 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
     
 <mapper namespace="kr.or.oti.mapper.CafeMemberMapper">
+
+	<select id="selectByCafeId" resultType="kr.or.oti.domain.CafeMemberVO">
+		SELECT
+			CAFE_MEMBER_ID AS cafeMemberId,
+			CAFE_ID AS cafeId,
+			MEMBER_USERNAME AS memberUsername,
+			CAFE_ROLE AS cafeRole,
+			STATUS,
+			JOINED_AT AS joinedAt
+		FROM CAFE_MEMBER
+		WHERE CAFE_ID = #{cafeId}
+			AND STATUS = 'ACTIVE'
+		ORDER BY
+		    CASE CAFE_ROLE
+		        WHEN 'OWNER' THEN 1
+		        WHEN 'MANAGER' THEN 2
+		        WHEN 'MEMBER' THEN 3
+		    END,
+		    JOINED_AT ASC
+	</select>
+	
 	<select id="selectOne" resultType="kr.or.oti.domain.CafeMemberVO">
 		SELECT
 			CAFE_MEMBER_ID AS cafeMemberId,
@@ -35,4 +56,14 @@
 			#{cafeRole}
 		)
 	</insert>
+	
+	<update id="updateRole">
+		UPDATE CAFE_MEMBER
+		SET
+			CAFE_ROLE = #{cafeRole}
+		WHERE CAFE_ID = #{cafeId}
+			AND MEMBER_USERNAME = #{memberUsername}
+			AND STATUS = 'ACTIVE'
+			AND CAFE_ROLE != 'OWNER'
+	</update>
 </mapper>
