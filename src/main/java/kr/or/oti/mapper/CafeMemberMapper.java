@@ -31,4 +31,12 @@ public interface CafeMemberMapper {
 	// 회원 재가입
 	int reactivate(@Param("cafeId")Long cafeId,
 			@Param("memberUsername")String memberUsername);
+	
+	// 회원 강퇴
+	int ban(@Param("cafeId")Long cafeId,
+			@Param("memberUsername")String memberUsername);
+	
+	// 회원 강퇴 해제
+	int unban(@Param("cafeId")Long cafeId,
+			@Param("memberUsername")String memberUsername);
 }

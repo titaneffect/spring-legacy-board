@@ -59,6 +59,24 @@ public class CafeMemberController {
 	    return "redirect:/cafe/" + cafeId;
 	}
 	
+	@PostMapping("/{memberUsername}/ban")
+	public String ban(@PathVariable("cafeId") Long cafeId,
+	        @PathVariable("memberUsername") String memberUsername, Principal principal) {
+		
+		cafeMemberService.ban(cafeId, memberUsername, principal.getName());
+		
+		return "redirect:/cafe/" + cafeId + "/member";
+	}
+	
+	@PostMapping("/{memberUsername}/unban")
+	public String unban(@PathVariable("cafeId") Long cafeId,
+	        @PathVariable("memberUsername") String memberUsername, Principal principal) {
+		
+		cafeMemberService.unban(cafeId, memberUsername, principal.getName());
+		
+		return "redirect:/cafe/" + cafeId + "/member";
+	}
+	
 	@PostMapping("/{memberUsername}/role")
 	public String changeRole(@PathVariable("cafeId") Long cafeId,
 	        @PathVariable("memberUsername")String memberUsername,

@@ -16,12 +16,19 @@
 			JOINED_AT AS joinedAt
 		FROM CAFE_MEMBER
 		WHERE CAFE_ID = #{cafeId}
-			AND STATUS = 'ACTIVE'
 		ORDER BY
+			CASE STATUS
+            WHEN 'ACTIVE' THEN 1
+            WHEN 'PENDING' THEN 2
+            WHEN 'BANNED' THEN 3
+            WHEN 'WITHDRAWN' THEN 4
+            ELSE 5
+        	END,
 		    CASE CAFE_ROLE
 		        WHEN 'OWNER' THEN 1
 		        WHEN 'MANAGER' THEN 2
 		        WHEN 'MEMBER' THEN 3
+		        ELSE 4
 		    END,
 		    JOINED_AT ASC
 	</select>
@@ -106,4 +113,24 @@
 	      AND STATUS = 'WITHDRAWN'
 	
 	</update>
+	
+	<update id="ban">
+		UPDATE CAFE_MEMBER
+	    SET STATUS = 'BANNED'
+	    WHERE CAFE_ID = #{cafeId}
+	      AND MEMBER_USERNAME = #{memberUsername}
+	      AND STATUS = 'ACTIVE'
+	      AND CAFE_ROLE != 'OWNER'
+	</update>
+	
+	<update id="unban">
+		UPDATE CAFE_MEMBER
+	    SET
+	        STATUS = 'ACTIVE',
+	        CAFE_ROLE = 'MEMBER'
+	    WHERE CAFE_ID = #{cafeId}
+	      AND MEMBER_USERNAME = #{memberUsername}
+	      AND STATUS = 'BANNED'
+	</update>
+	
 </mapper>

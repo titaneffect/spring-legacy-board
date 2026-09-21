@@ -13,10 +13,13 @@ public interface CafeMemberService {
 	
 	void join(Long cafeId, String username);
 	
-	void changeRole(Long cafeId, String targetUsername, CafeRole cafeRole, 
-			String requesterUsername);
-	
 	void withdraw(Long cafeId, String username);
 	
+	void ban(Long cafeId, String targetUsername, String requesterUsername);
+	
+	void unban(Long cafeId, String targetUsername, String requesterUsername);
+	
+	void changeRole(Long cafeId, String targetUsername, CafeRole cafeRole, 
+			String requesterUsername);
 	
 }

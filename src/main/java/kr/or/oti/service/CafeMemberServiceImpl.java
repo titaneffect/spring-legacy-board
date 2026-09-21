@@ -109,6 +109,58 @@ public class CafeMemberServiceImpl implements CafeMemberService{
 	}
 	
 	@Override
+	public void ban(Long cafeId, String targetUsername, String requesterUsername) {
+		// 강퇴를 요청한 사용자
+		CafeMemberVO requester = cafeMemberMapper.selectOne(cafeId, requesterUsername);
+		
+		if(requester == null || requester.getCafeRole() != CafeRole.OWNER) {
+			throw new AccessDeniedException("카페 소유자만 회원을 강퇴할 수 있습니다.");
+		}
+		
+		// 강퇴 대상 회원
+		CafeMemberVO target = cafeMemberMapper.selectOne(cafeId, targetUsername);
+		
+		if(target == null) {
+			throw new IllegalStateException("해당 카페 회원을 찾을 수 없습니다.");
+		}
+		
+		if(target.getCafeRole() == CafeRole.OWNER) {
+			throw new AccessDeniedException("카페 소유자는 강퇴할 수 없습니다.");
+		}
+		
+		int result = cafeMemberMapper.ban(cafeId, targetUsername);
+		
+		if(result != 1) {
+			throw new IllegalStateException("카페 회원 강퇴에 실패했습니다.");
+		}
+	}
+	
+	@Override
+	public void unban(Long cafeId, String targetUsername, String requesterUsername) {
+		CafeMemberVO requester = cafeMemberMapper.selectOne(cafeId, requesterUsername);
+		
+		if(requester == null || requester.getCafeRole() != CafeRole.OWNER) {
+			throw new AccessDeniedException("카페 소유자만 강퇴를 해제할 수 있습니다.");
+		}
+		
+		CafeMemberVO target = cafeMemberMapper.selectOneAllStatus(cafeId, targetUsername);
+		
+		if(target == null) {
+			throw new IllegalStateException("해당 카페 회원을 찾을 수 없습니다.");
+		}
+		
+		if(target.getStatus() != CafeMemberStatus.BANNED) {
+			throw new IllegalStateException("강퇴된 회원이 아닙니다.");
+		}
+		
+		int result = cafeMemberMapper.unban(cafeId, targetUsername);
+		
+		if(result != 1) {
+			throw new IllegalStateException("강퇴 해제에 실패했습니다.");
+		}
+	}
+	
+	@Override
 	public void changeRole(Long cafeId, String targetUsername, CafeRole newRole, 
 			String requesterUsername) {
 		
