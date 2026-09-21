@@ -23,6 +23,7 @@ import kr.or.oti.dto.PageRequestDTO;
 import kr.or.oti.exception.BoardNotFoundException;
 import kr.or.oti.service.BoardAttachService;
 import kr.or.oti.service.BoardService;
+import kr.or.oti.service.CafeBoardAccessService;
 import kr.or.oti.service.CafeBoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,13 +37,28 @@ public class BoardController {
 	private final BoardService boardService;
 	private final BoardAttachService boardAttachService;
 	private final CafeBoardService cafeBoardService;
+	private final CafeBoardAccessService cafeBoardAccessService;
 
 	@GetMapping
 	public String list(
 		@PathVariable("cafeId")Long cafeId, @PathVariable("cafeBoardId")Long cafeBoardId,
-		PageRequestDTO pageRequestDTO, Model model) {
+		PageRequestDTO pageRequestDTO, Principal principal, Model model) {
 		
 		CafeBoardDTO cafeBoard = cafeBoardService.get(cafeId, cafeBoardId);
+		
+		String username = principal == null ? null : principal.getName();
+		
+		boolean canRead = cafeBoardAccessService.canAccess(cafeId, username,
+				cafeBoard.getReadRole());
+		
+		if(!canRead) {
+			throw new AccessDeniedException("이 게시판을 조회할 권한이 없습니다.");
+		}
+		
+		boolean canWrite = cafeBoardAccessService.canAccess(cafeId, username,
+				cafeBoard.getWriteRole());
+		
+		model.addAttribute("canWrite", canWrite);
 		
 		model.addAttribute("pageResponse", boardService.getList(cafeBoardId, pageRequestDTO));
 		model.addAttribute("pageRequest", pageRequestDTO);
@@ -55,10 +71,17 @@ public class BoardController {
 	@GetMapping("/{bno:\\d+}")
 	public String read(
 		@PathVariable("cafeId") Long cafeId, @PathVariable("cafeBoardId") Long cafeBoardId,
-	    @PathVariable("bno") Long bno, PageRequestDTO pageRequestDTO, Model model) {
+	    @PathVariable("bno") Long bno, PageRequestDTO pageRequestDTO,
+	    Principal principal, Model model) {
 		
 		// 게시판이 해당 카페 소속인지 확인
 		CafeBoardDTO cafeBoard = cafeBoardService.get(cafeId, cafeBoardId);
+		
+		String username = principal == null ? null : principal.getName();
+		
+		if(!cafeBoardAccessService.canAccess(cafeId, username, cafeBoard.getReadRole())) {
+			throw new AccessDeniedException("이 게시글을 조회할 권한이 없습니다.");
+		}
 		
 		BoardDTO boardDTO = boardService.get(bno);
 		
@@ -67,9 +90,13 @@ public class BoardController {
 	        throw new BoardNotFoundException(bno);
 	    }
 		
+		boolean canWrite  = cafeBoardAccessService.canAccess(cafeId, username, cafeBoard.getWriteRole());
+		
+		model.addAttribute("canWrite", canWrite);
+		
 		model.addAttribute("cafeId", cafeId);
 	    model.addAttribute("cafeBoard", cafeBoard);
-		model.addAttribute("board", boardService.get(bno));
+		model.addAttribute("board", boardDTO);
 		model.addAttribute("pageRequest", pageRequestDTO);
 		model.addAttribute("attachList", boardAttachService.getList(bno));
 		
@@ -78,10 +105,21 @@ public class BoardController {
 
 	@GetMapping("/register")
 	public String register(
-			@PathVariable("cafeId")Long cafeId, @PathVariable("cafeBoardId")Long cafeBoardId,
-			Model model) {
+			@PathVariable("cafeId")Long cafeId,
+			@PathVariable("cafeBoardId")Long cafeBoardId,
+			Principal principal, Model model) {
 		
 		CafeBoardDTO cafeBoard = cafeBoardService.get(cafeId, cafeBoardId);
+		
+		String username = principal == null ? null : principal.getName();
+		
+		boolean canWrite  = cafeBoardAccessService.canAccess(cafeId, username, cafeBoard.getWriteRole());
+			
+		if(!canWrite) {
+			throw new AccessDeniedException("이 게시판에 글을 작성할 권한이 없습니다.");
+		}
+				
+		model.addAttribute("canWrite", canWrite);
 		
 		model.addAttribute("cafeId", cafeId);
 		model.addAttribute("cafeBoard", cafeBoard);
@@ -99,8 +137,16 @@ public class BoardController {
 
 		CafeBoardDTO cafeBoard = cafeBoardService.get(cafeId, cafeBoardId);
 		
+		String username = principal == null ? null : principal.getName();
+		
+		if(!cafeBoardAccessService.canAccess(cafeId, username, cafeBoard.getWriteRole())) {
+			throw new AccessDeniedException("이 게시판에 글을 작성할 권한이 없습니다.");
+		}
+		
 		if (bindingResult.hasErrors()) {
 			log.info("has errors....");
+			
+			model.addAttribute("canWrite", true);
 			
 			model.addAttribute("errors", bindingResult.getAllErrors());
 			model.addAttribute("cafeId", cafeId);
@@ -110,7 +156,7 @@ public class BoardController {
 		}
 		
 		boardDTO.setCafeBoardId(cafeBoard.getCafeBoardId());
-		boardDTO.setWriter(principal.getName());
+		boardDTO.setWriter(username);
 		
 		Long bno = boardService.register(boardDTO);
 
@@ -133,18 +179,25 @@ public class BoardController {
 		    @PathVariable("bno") Long bno, PageRequestDTO pageRequestDTO, Model model,
 			Principal principal) {
 
+		BoardDTO boardDTO = boardService.get(bno);
+		
 		CafeBoardDTO cafeBoard = cafeBoardService.get(cafeId, cafeBoardId);
 		
-		BoardDTO boardDTO = boardService.get(bno);
-
 		if (!cafeBoardId.equals(boardDTO.getCafeBoardId())) {
 	        throw new BoardNotFoundException(bno);
 	    }
-
 		
-		if (!principal.getName().equals(boardDTO.getWriter())) {
+		String username = principal.getName();
+		
+		if(!cafeBoardAccessService.canAccess(cafeId, username, cafeBoard.getWriteRole())) {
+			throw new AccessDeniedException("이 게시판의 글을 수정할 권한이 없습니다.");
+		}
+		
+		if (!username.equals(boardDTO.getWriter())) {
 			throw new AccessDeniedException("본인의 게시글만 수정할 수 있습니다.");
 		}
+		
+		model.addAttribute("canWrite", true);
 		
 		model.addAttribute("cafeId", cafeId);
 		model.addAttribute("cafeBoard", cafeBoard);
@@ -171,15 +224,25 @@ public class BoardController {
 		if (!cafeBoardId.equals(savedBoard.getCafeBoardId())) {
 	        throw new BoardNotFoundException(bno);
 	    }
-
-		// 2. 원래 작성자와 현재 로그인 사용자 비교
-		if (!principal.getName().equals(savedBoard.getWriter())) {
-			throw new AccessDeniedException("본인의 게시글만 수정할 수 있습니다.");
+		
+		// 2. 게시판에 글을 수정할 권한 확인
+		String username = principal.getName();
+		
+		if(!cafeBoardAccessService.canAccess(cafeId, username, cafeBoard.getWriteRole())) {
+			throw new AccessDeniedException("이 게시판의 글을 수정할 권한이 없습니다.");
 		}
 
-		// 3. 입력값 검증
+		// 3. 원래 작성자와 현재 로그인 사용자 비교
+		if (!username.equals(savedBoard.getWriter())) {
+			throw new AccessDeniedException("본인의 게시글만 수정할 수 있습니다.");
+		}
+		
+		// 4. 입력값 검증
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("errors", bindingResult.getAllErrors());
+			
+			model.addAttribute("canWrite", true);
+			
 			model.addAttribute("cafeId", cafeId);
 			model.addAttribute("cafeBoard", cafeBoard);
 			model.addAttribute("pageRequest", pageRequestDTO);
@@ -188,7 +251,7 @@ public class BoardController {
 			return "board/modify";
 		}
 
-		// 4. 작성자가 맞을 때만 수정
+		// 5. 작성자가 맞을 때만 수정
 		boardDTO.setBno(bno);
 		boardDTO.setCafeBoardId(savedBoard.getCafeBoardId());
 		boardDTO.setWriter(savedBoard.getWriter());
@@ -222,12 +285,19 @@ public class BoardController {
 		@PathVariable("bno") Long bno, Principal principal) {
 		
 		BoardDTO savedBoard = boardService.get(bno);
+		CafeBoardDTO cafeBoard = cafeBoardService.get(cafeId, cafeBoardId);
 		
 		if (!cafeBoardId.equals(savedBoard.getCafeBoardId())) {
 		    throw new BoardNotFoundException(bno);
 		}
 
-		if (!principal.getName().equals(savedBoard.getWriter())) {
+		String username = principal.getName();
+		
+		if (!cafeBoardAccessService.canAccess(cafeId, username, cafeBoard.getWriteRole())){
+		    throw new AccessDeniedException("이 게시판의 글을 삭제할 권한이 없습니다.");
+		}
+		
+		if (!username.equals(savedBoard.getWriter())) {
 			throw new AccessDeniedException("본인의 게시글만 삭제할 수 있습니다.");
 		}
 		

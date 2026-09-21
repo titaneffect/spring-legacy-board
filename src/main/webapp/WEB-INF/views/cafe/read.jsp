@@ -237,10 +237,18 @@
 				        <%-- 비로그인 사용자 --%>
 				        <c:when test="${empty pageContext.request.userPrincipal}">
 				
-				            <a class="btn cafe-primary-button w-100"
-				               href="${pageContext.request.contextPath}/member/login">
-				                로그인 후 카페 가입
-				            </a>
+				            <c:url var="cafeLoginUrl"
+							       value="/member/login">
+							
+							    <c:param name="returnUrl"
+							             value="${pageContext.request.contextPath}/cafe/${cafe.cafeId}"/>
+							
+							</c:url>
+							
+							<a class="btn cafe-primary-button w-100"
+							   href="${cafeLoginUrl}">
+							    로그인 후 카페 가입
+							</a>
 				
 				        </c:when>
 				

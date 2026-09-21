@@ -40,9 +40,7 @@ public class CafeBoardServiceImpl implements CafeBoardService{
 	
 	@Override
 	public Long register(CafeBoardDTO cafeBoardDTO) {
-		if(cafeBoardDTO.getWriteRole() == CafeBoardAccessLevel.GUEST) {
-			throw new IllegalArgumentException("비회원에게 글쓰기 권한을 부여할 수 없습니다.");
-		}
+		validateAccessPolicy(cafeBoardDTO);
 		
 		CafeBoardVO cafeBoardVO = CafeBoardVO.builder()
 									.cafeId(cafeBoardDTO.getCafeId())
@@ -63,44 +61,34 @@ public class CafeBoardServiceImpl implements CafeBoardService{
 	}
 	
 	@Override
-	public void modify(
-	        CafeBoardDTO cafeBoardDTO) {
+	public void modify(CafeBoardDTO cafeBoardDTO) {
+		validateAccessPolicy(cafeBoardDTO);
 
-	    if (cafeBoardDTO.getWriteRole()
-	            == CafeBoardAccessLevel.GUEST) {
+	    CafeBoardVO cafeBoardVO =CafeBoardVO.builder()
+					                .cafeBoardId(
+					                    cafeBoardDTO.getCafeBoardId()
+					                )
+					                .cafeId(
+					                    cafeBoardDTO.getCafeId()
+					                )
+					                .boardName(
+					                    cafeBoardDTO.getBoardName()
+					                )
+					                .boardType(
+					                    cafeBoardDTO.getBoardType()
+					                )
+					                .readRole(
+					                    cafeBoardDTO.getReadRole()
+					                )
+					                .writeRole(
+					                    cafeBoardDTO.getWriteRole()
+					                )
+					                .displayOrder(
+					                    cafeBoardDTO.getDisplayOrder()
+					                )
+					                .build();
 
-	        throw new IllegalArgumentException(
-	            "비회원에게 글쓰기 권한을 부여할 수 없습니다."
-	        );
-	    }
-
-	    CafeBoardVO cafeBoardVO =
-	            CafeBoardVO.builder()
-	                .cafeBoardId(
-	                    cafeBoardDTO.getCafeBoardId()
-	                )
-	                .cafeId(
-	                    cafeBoardDTO.getCafeId()
-	                )
-	                .boardName(
-	                    cafeBoardDTO.getBoardName()
-	                )
-	                .boardType(
-	                    cafeBoardDTO.getBoardType()
-	                )
-	                .readRole(
-	                    cafeBoardDTO.getReadRole()
-	                )
-	                .writeRole(
-	                    cafeBoardDTO.getWriteRole()
-	                )
-	                .displayOrder(
-	                    cafeBoardDTO.getDisplayOrder()
-	                )
-	                .build();
-
-	    int result =
-	            cafeBoardMapper.updateOne(cafeBoardVO);
+	    int result = cafeBoardMapper.updateOne(cafeBoardVO);
 
 	    if (result != 1) {
 	        throw new CafeBoardNotFoundException(
@@ -111,26 +99,32 @@ public class CafeBoardServiceImpl implements CafeBoardService{
 	}
 	
 	@Override
-	public void remove(
-	        Long cafeId,
-	        Long cafeBoardId) {
-
-	    int result =
-	            cafeBoardMapper.deleteOne(
-	                cafeId,
-	                cafeBoardId
-	            );
+	public void remove(Long cafeId, Long cafeBoardId) {
+	    int result = cafeBoardMapper.deleteOne(cafeId, cafeBoardId);
 
 	    if (result != 1) {
-	        throw new CafeBoardNotFoundException(
-	            cafeId,
-	            cafeBoardId
-	        );
+	        throw new CafeBoardNotFoundException(cafeId, cafeBoardId);
 	    }
 	}
 	
-	 private CafeBoardDTO VOtoDTO(CafeBoardVO cafeBoardVO) {
-	        return CafeBoardDTO.builder()
+	private void validateAccessPolicy(CafeBoardDTO cafeBoardDTO) {
+	    if (cafeBoardDTO.getReadRole() == null
+	            || cafeBoardDTO.getWriteRole() == null) {
+
+	        throw new IllegalArgumentException("게시판 접근 권한은 필수입니다.");
+	    }
+
+	    if (cafeBoardDTO.getWriteRole() == CafeBoardAccessLevel.GUEST) {
+	    	throw new IllegalArgumentException("비회원에게 글쓰기 권한을 부여할 수 없습니다.");
+	    }
+
+	    if (cafeBoardDTO.getWriteRole().isLowerThan(cafeBoardDTO.getReadRole())) {
+	    	throw new IllegalArgumentException("쓰기 권한은 읽기 권한보다 낮게 설정할 수 없습니다.");
+	    }
+	}
+	
+	private CafeBoardDTO VOtoDTO(CafeBoardVO cafeBoardVO) {
+	       return CafeBoardDTO.builder()
 	                .cafeBoardId(cafeBoardVO.getCafeBoardId())	                
 	                .cafeId(cafeBoardVO.getCafeId())
 	                .boardName(cafeBoardVO.getBoardName())

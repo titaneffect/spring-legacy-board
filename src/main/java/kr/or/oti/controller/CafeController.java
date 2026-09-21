@@ -67,8 +67,8 @@ public class CafeController {
 	}
 
 	@PostMapping("/register")
-	public String register(@Valid @ModelAttribute("cafe") CafeDTO cafeDTO, BindingResult bindingResult,
-			Principal principal) {
+	public String register(@Valid @ModelAttribute("cafe") CafeDTO cafeDTO,
+			BindingResult bindingResult, Principal principal) {
 
 		if (bindingResult.hasErrors()) {
 			log.info("카페 등록 검증 실패: {}", bindingResult.getAllErrors());
@@ -175,10 +175,20 @@ public class CafeController {
 		// 수정 대상 카페는 URL 값으로 결정
 		cafeBoardDTO.setCafeId(cafeId);
 
-		// 변조 요청으로 GUEST 쓰기를 보낸 경우
 		if (cafeBoardDTO.getWriteRole() == CafeBoardAccessLevel.GUEST) {
+			
+			bindingResult.rejectValue("writeRole", "guestWriteNotAllowed",
+					"비회원에게 글쓰기 권한을 부여할 수 없습니다.");
+			
+		} else if (cafeBoardDTO.getReadRole() != null
+		        && cafeBoardDTO.getWriteRole() != null
+		        && cafeBoardDTO.getWriteRole().isLowerThan(cafeBoardDTO.getReadRole())) {
 
-			bindingResult.rejectValue("writeRole", "guestWriteNotAllowed", "비회원에게 글쓰기 권한을 부여할 수 없습니다.");
+		    bindingResult.rejectValue(
+		        "writeRole",
+		        "invalidWriteRole",
+		        "쓰기 권한은 읽기 권한보다 낮게 설정할 수 없습니다."
+		    );
 		}
 
 		if (bindingResult.hasErrors()) {
@@ -266,15 +276,21 @@ public class CafeController {
 	    cafeBoardService.get(
 	        cafeId,
 	        cafeBoardId
-	    );
-
-	    if (cafeBoardDTO.getWriteRole()
-	            == CafeBoardAccessLevel.GUEST) {
+	    );    
+	    
+	    if (cafeBoardDTO.getWriteRole() == CafeBoardAccessLevel.GUEST) {
+	    	
+	    	bindingResult.rejectValue("writeRole", "guestWriteNotAllowed",
+	            "비회원에게 글쓰기 권한을 부여할 수 없습니다.");
+	    	
+	    } else if (cafeBoardDTO.getReadRole() != null
+	            && cafeBoardDTO.getWriteRole() != null
+	            && cafeBoardDTO.getWriteRole().isLowerThan(cafeBoardDTO.getReadRole())) {
 
 	        bindingResult.rejectValue(
 	            "writeRole",
-	            "guestWriteNotAllowed",
-	            "비회원에게 글쓰기 권한을 부여할 수 없습니다."
+	            "invalidWriteRole",
+	            "쓰기 권한은 읽기 권한보다 낮게 설정할 수 없습니다."
 	        );
 	    }
 

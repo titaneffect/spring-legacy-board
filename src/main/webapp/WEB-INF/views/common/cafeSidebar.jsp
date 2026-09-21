@@ -24,24 +24,31 @@
         </div>
 
         <c:choose>
-            <c:when test="${not empty pageContext.request.userPrincipal}">
 
-                <a class="cafe-write-button mt-3"
-                   href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post/register">
-                   
-                    카페 글쓰기
-                </a>
-
-            </c:when>
-
-            <c:otherwise>
-
-                <a class="cafe-write-button mt-3" href="${pageContext.request.contextPath}/member/login?cafeId=${cafeId}&cafeBoardId=${cafeBoard.cafeBoardId}">
-                    로그인하고 글쓰기
-                </a>
-
-            </c:otherwise>
-        </c:choose>
+		    <%-- 글쓰기 권한 있음 --%>
+		    <c:when test="${canWrite}">
+		        <a class="cafe-write-button mt-3"
+		           href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post/register">
+		            카페 글쓰기
+		        </a>
+		    </c:when>
+		
+		    <%-- 비로그인 사용자: 클릭하면 Spring Security가 로그인으로 이동 --%>
+		    <c:when test="${empty pageContext.request.userPrincipal}">
+		        <a class="cafe-write-button mt-3"
+		           href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post/register">
+		            로그인 후 글쓰기
+		        </a>
+		    </c:when>
+		
+		    <%-- 로그인했지만 카페 등급이 부족함 --%>
+		    <c:otherwise>
+		        <a class="cafe-write-button mt-3">
+		            글쓰기 권한 없음
+		        </a>
+		    </c:otherwise>
+		
+		</c:choose>
 
     </section>
 

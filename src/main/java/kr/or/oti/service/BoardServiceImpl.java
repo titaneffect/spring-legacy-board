@@ -49,6 +49,7 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public Long register(BoardDTO boardDTO) {
 		BoardVO boardVO = DTOtoVO(boardDTO);
+		
 		int result = boardMapper.insertOne(boardVO);
 		
 		if(result != 1) {
@@ -61,6 +62,7 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public void modify(BoardDTO boardDTO) {
 		BoardVO boardVO = DTOtoVO(boardDTO);
+		
 		int result = boardMapper.updateOne(boardVO);
 		
 		if(result != 1) {
