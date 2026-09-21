@@ -49,6 +49,16 @@ public class CafeMemberController {
 		return "redirect:/cafe/" + cafeId;
 	}
 	
+	@PostMapping("/withdraw")
+	public String withdraw(@PathVariable("cafeId")Long cafeId, Principal principal) {
+		// 존재하지 않는 카페라면 404
+	    cafeService.get(cafeId);
+
+	    cafeMemberService.withdraw(cafeId, principal.getName());
+	    
+	    return "redirect:/cafe/" + cafeId;
+	}
+	
 	@PostMapping("/{memberUsername}/role")
 	public String changeRole(@PathVariable("cafeId") Long cafeId,
 	        @PathVariable("memberUsername")String memberUsername,

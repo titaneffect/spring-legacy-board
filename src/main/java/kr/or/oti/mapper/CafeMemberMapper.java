@@ -19,4 +19,16 @@ public interface CafeMemberMapper {
 	int updateRole(@Param("cafeId")Long cafeId,
 			@Param("memberUsername")String memberUsername,
 			@Param("cafeRole")CafeRole cafeRole);
+	
+	// WITHDRAWN, BANNED까지 조회
+	CafeMemberVO selectOneAllStatus(@Param("cafeId")Long cafeId,
+			@Param("memberUsername")String memberUsername);
+	
+	// 회원 탈퇴
+	int withdraw(@Param("cafeId")Long cafeId,
+			@Param("memberUsername")String memberUsername);
+	
+	// 회원 재가입
+	int reactivate(@Param("cafeId")Long cafeId,
+			@Param("memberUsername")String memberUsername);
 }

@@ -226,9 +226,14 @@
 		        </div>
 		        
 		        <div class="cafe-membership-area">
+		       
+				    <div class="cafe-membership-title">
+				        <span class="cafe-membership-title-dot"></span>
+				        나의 카페 활동
+				    </div>
 				
 				    <c:choose>
-				
+			
 				        <%-- 비로그인 사용자 --%>
 				        <c:when test="${empty pageContext.request.userPrincipal}">
 				
@@ -260,34 +265,64 @@
 				
 				        <%-- 이미 가입한 사용자 --%>
 				        <c:otherwise>
-				
-				            <div class="cafe-membership-status">
-				
-				                <span class="cafe-membership-dot"></span>
-				
-				                <span>
-				                    카페 회원
-				                </span>
-				
-				                <strong>
-				                    <c:choose>
-				                        <c:when test="${currentCafeMember.cafeRole eq 'OWNER'}">
-				                            소유자
-				                        </c:when>
-				
-				                        <c:when test="${currentCafeMember.cafeRole eq 'MANAGER'}">
-				                            운영자
-				                        </c:when>
-				
-				                        <c:otherwise>
-				                            일반 회원
-				                        </c:otherwise>
-				                    </c:choose>
-				                </strong>
-				
-				            </div>
-				
-				        </c:otherwise>
+	
+						    <div class="cafe-membership-card">
+						
+						        <div class="cafe-membership-summary">
+						
+						            <span class="cafe-membership-dot"></span>
+						
+						            <div class="cafe-membership-text">
+						
+						                <span class="cafe-membership-label">
+						                    카페 회원
+						                </span>
+						
+						                <strong class="cafe-membership-role">
+						                    <c:choose>
+						
+						                        <c:when test="${currentCafeMember.cafeRole eq 'OWNER'}">
+						                            소유자
+						                        </c:when>
+						
+						                        <c:when test="${currentCafeMember.cafeRole eq 'MANAGER'}">
+						                            운영자
+						                        </c:when>
+						
+						                        <c:otherwise>
+						                            일반 회원
+						                        </c:otherwise>
+						
+						                    </c:choose>
+						                </strong>
+						
+						            </div>
+						
+						        </div>
+						
+						        <c:if test="${currentCafeMember.cafeRole ne 'OWNER'}">
+						
+						            <form method="post"
+						                  action="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/member/withdraw"
+						                  class="cafe-withdraw-form"
+						                  onsubmit="return confirm('정말 이 카페에서 탈퇴하시겠습니까?');">
+						
+						                <input type="hidden"
+						                       name="${_csrf.parameterName}"
+						                       value="${_csrf.token}">
+						
+						                <button type="submit"
+						                        class="cafe-withdraw-button">
+						                    카페 탈퇴
+						                </button>
+						
+						            </form>
+						
+						        </c:if>
+						
+						    </div>
+						
+						</c:otherwise>
 				
 				    </c:choose>
 				

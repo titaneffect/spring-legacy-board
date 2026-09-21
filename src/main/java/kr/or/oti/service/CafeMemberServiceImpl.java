@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import kr.or.oti.domain.CafeMemberStatus;
 import kr.or.oti.domain.CafeMemberVO;
 import kr.or.oti.domain.CafeRole;
 import kr.or.oti.dto.CafeMemberDTO;
@@ -39,24 +40,72 @@ public class CafeMemberServiceImpl implements CafeMemberService{
 	
 	@Override
 	public void join(Long cafeId, String username) {
-		CafeMemberVO existingMember = cafeMemberMapper.selectOne(cafeId, username);
+		CafeMemberVO existingMember = cafeMemberMapper.selectOneAllStatus(cafeId, username);
 		
-		if(existingMember != null) {
+		// 가입 기록 자체가 없으면 최초 INSERT
+		if(existingMember == null) {
+			CafeMemberVO cafeMemberVO = CafeMemberVO.builder()
+											.cafeId(cafeId)
+											.memberUsername(username)
+											.cafeRole(CafeRole.MEMBER)
+											.build();
+			
+			int result = cafeMemberMapper.insertOne(cafeMemberVO);
+			
+			if(result != 1) {
+				throw new IllegalStateException("카페 가입에 실패했습니다.");
+			}
+			
+			return;
+		}
+		
+		// 현재 활동 중인 회원
+		if(existingMember.getStatus() == CafeMemberStatus.ACTIVE) {
 			throw new IllegalStateException("이미 가입한 카페입니다.");
 		}
 		
-		CafeMemberVO cafeMemberVO = CafeMemberVO.builder()
-										.cafeId(cafeId)
-										.memberUsername(username)
-										.cafeRole(CafeRole.MEMBER)
-										.build();
-		
-		int result = cafeMemberMapper.insertOne(cafeMemberVO);
-		
-		if(result != 1) {
-			throw new IllegalStateException("카페 가입에 실패했습니다.");
+		// 자진 탈퇴한 회원은 기존 행을 복구
+		if(existingMember.getStatus() == CafeMemberStatus.WITHDRAWN) {
+			int result = cafeMemberMapper.reactivate(cafeId, username);
+			
+			if(result != 1) {
+				throw new IllegalStateException("카페 재가입에 실패했습니다.");
+			}
+			
+			return;
 		}
 		
+		// 강퇴된 회원은 재가입 불가
+		if(existingMember.getStatus() == CafeMemberStatus.BANNED) {
+			throw new AccessDeniedException("강퇴된 회원은 카페에 재가입할 수 없습니다.");
+		}
+		
+		// 가입 승인 대기 중인 경우
+		if(existingMember.getStatus() == CafeMemberStatus.PENDING) {
+			throw new IllegalStateException("카페 가입 승인 대기 중입니다.");
+		}
+		
+		throw new IllegalStateException("처리할 수 없는 회원 상태입니다.");
+		
+	}
+	
+	@Override
+	public void withdraw(Long cafeId, String username) {
+		CafeMemberVO cafeMemberVO = cafeMemberMapper.selectOne(cafeId, username);
+		
+		if(cafeMemberVO == null) {
+			throw new IllegalStateException("가입한 카페 회원이 아닙니다.");
+		}
+		
+		if(cafeMemberVO.getCafeRole() == CafeRole.OWNER) {
+			throw new AccessDeniedException("카페 소유자는 탈퇴할 수 없습니다.");
+		}
+		
+		int result = cafeMemberMapper.withdraw(cafeId, username);
+		
+		if(result != 1) {
+			throw new IllegalStateException("카페 탈퇴에 실패했습니다.");
+		}
 	}
 	
 	@Override

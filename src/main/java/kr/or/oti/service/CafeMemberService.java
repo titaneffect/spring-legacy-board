@@ -15,4 +15,8 @@ public interface CafeMemberService {
 	
 	void changeRole(Long cafeId, String targetUsername, CafeRole cafeRole, 
 			String requesterUsername);
+	
+	void withdraw(Long cafeId, String username);
+	
+	
 }

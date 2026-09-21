@@ -1324,42 +1324,129 @@ body {
 }
 
 
-/* 카페 가입 상태 */
+/* 카페 회원 상태 */
+
+.cafe-membership-card {
+    min-height: 64px;
+    padding: 11px 13px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    background-color: #f3fbf6;
+    border: 1px solid #d9f1e3;
+    border-radius: 8px;
+}
+
+.cafe-membership-summary {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cafe-membership-dot {
+    width: 8px;
+    height: 8px;
+
+    flex-shrink: 0;
+
+    background-color: var(--cafe-green);
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(3, 199, 90, 0.1);
+}
+
+.cafe-membership-text {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.cafe-membership-label {
+    color: var(--cafe-text-light);
+    font-size: 0.72rem;
+}
+
+.cafe-membership-role {
+    color: var(--cafe-green-dark);
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+/* 카페 탈퇴 */
+
+.cafe-withdraw-form {
+    flex-shrink: 0;
+    margin: 0;
+}
+
+.cafe-withdraw-button {
+    padding: 6px 10px;
+
+    background-color: #ffffff;
+    border: 1px solid #ead4d7;
+    border-radius: 999px;
+
+    color: #a85a62;
+    cursor: pointer;
+    font-size: 0.72rem;
+    font-weight: 600;
+
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.cafe-withdraw-button:hover {
+    background-color: #fff1f2;
+    border-color: #e7a9af;
+    color: #c82333;
+}
+
+@media (max-width: 400px) {
+    .cafe-membership-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .cafe-withdraw-form {
+        width: 100%;
+    }
+
+    .cafe-withdraw-button {
+        width: 100%;
+    }
+}
+
+
+/* 나의 카페 활동 영역 */
 
 .cafe-membership-area {
-    margin-top: 18px;
+    margin-top: 20px;
     padding-top: 18px;
 
     border-top: 1px solid var(--cafe-border);
 }
 
-.cafe-membership-area form {
-    margin: 0;
-}
-
-.cafe-membership-status {
-    min-height: 44px;
-    padding: 0 13px;
+.cafe-membership-title {
+    margin-bottom: 12px;
 
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
 
-    background-color: #edf9f2;
-    border-radius: 6px;
-
-    color: var(--cafe-text-light);
-    font-size: 0.82rem;
-}
-
-.cafe-membership-status strong {
-    margin-left: auto;
-
-    color: var(--cafe-green-dark);
+    color: var(--cafe-text);
     font-size: 0.85rem;
+    font-weight: 700;
 }
 
-.cafe-membership-dot {
+.cafe-membership-title-dot {
     width: 7px;
     height: 7px;
 

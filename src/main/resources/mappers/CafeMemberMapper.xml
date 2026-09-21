@@ -66,4 +66,44 @@
 			AND STATUS = 'ACTIVE'
 			AND CAFE_ROLE != 'OWNER'
 	</update>
+	
+	<select id="selectOneAllStatus"
+	        resultType="kr.or.oti.domain.CafeMemberVO">
+	
+	    SELECT
+	        CAFE_MEMBER_ID AS cafeMemberId,
+	        CAFE_ID AS cafeId,
+	        MEMBER_USERNAME AS memberUsername,
+	        CAFE_ROLE AS cafeRole,
+	        STATUS,
+	        JOINED_AT AS joinedAt
+	    FROM CAFE_MEMBER
+	    WHERE CAFE_ID = #{cafeId}
+	      AND MEMBER_USERNAME = #{memberUsername}
+	
+	</select>
+	
+	<update id="withdraw">
+
+	    UPDATE CAFE_MEMBER
+	    SET STATUS = 'WITHDRAWN'
+	    WHERE CAFE_ID = #{cafeId}
+	      AND MEMBER_USERNAME = #{memberUsername}
+	      AND STATUS = 'ACTIVE'
+	      AND CAFE_ROLE != 'OWNER'
+	
+	</update>
+	
+	<update id="reactivate">
+
+	    UPDATE CAFE_MEMBER
+	    SET
+	        STATUS = 'ACTIVE',
+	        CAFE_ROLE = 'MEMBER',
+	        JOINED_AT = SYSDATE
+	    WHERE CAFE_ID = #{cafeId}
+	      AND MEMBER_USERNAME = #{memberUsername}
+	      AND STATUS = 'WITHDRAWN'
+	
+	</update>
 </mapper>
