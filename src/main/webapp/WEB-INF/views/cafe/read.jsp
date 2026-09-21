@@ -224,6 +224,74 @@
 		            </div>
 		
 		        </div>
+		        
+		        <div class="cafe-membership-area">
+				
+				    <c:choose>
+				
+				        <%-- 비로그인 사용자 --%>
+				        <c:when test="${empty pageContext.request.userPrincipal}">
+				
+				            <a class="btn cafe-primary-button w-100"
+				               href="${pageContext.request.contextPath}/member/login">
+				                로그인 후 카페 가입
+				            </a>
+				
+				        </c:when>
+				
+				        <%-- 로그인했지만 아직 가입하지 않은 사용자 --%>
+				        <c:when test="${empty currentCafeMember}">
+				
+				            <form method="post"
+				                  action="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/member/join">
+				
+				                <input type="hidden"
+				                       name="${_csrf.parameterName}"
+				                       value="${_csrf.token}">
+				
+				                <button type="submit"
+				                        class="btn cafe-primary-button w-100">
+				                    카페 가입
+				                </button>
+				
+				            </form>
+				
+				        </c:when>
+				
+				        <%-- 이미 가입한 사용자 --%>
+				        <c:otherwise>
+				
+				            <div class="cafe-membership-status">
+				
+				                <span class="cafe-membership-dot"></span>
+				
+				                <span>
+				                    카페 회원
+				                </span>
+				
+				                <strong>
+				                    <c:choose>
+				                        <c:when test="${currentCafeMember.cafeRole eq 'OWNER'}">
+				                            소유자
+				                        </c:when>
+				
+				                        <c:when test="${currentCafeMember.cafeRole eq 'MANAGER'}">
+				                            운영자
+				                        </c:when>
+				
+				                        <c:otherwise>
+				                            일반 회원
+				                        </c:otherwise>
+				                    </c:choose>
+				                </strong>
+				
+				            </div>
+				
+				        </c:otherwise>
+				
+				    </c:choose>
+				
+				</div>
 		
 		        <c:if test="${not empty pageContext.request.userPrincipal
 		                      and pageContext.request.userPrincipal.name

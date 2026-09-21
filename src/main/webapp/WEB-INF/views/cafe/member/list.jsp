@@ -64,6 +64,7 @@
                                 <th>카페 역할</th>
                                 <th>가입 상태</th>
                                 <th>가입일</th>
+                                <th class="text-end">역할 관리</th>
                             </tr>
                         </thead>
 
@@ -74,12 +75,34 @@
 
                                 <tr>
                                     <td>
-                                        <c:out value="${member.memberUsername}"/>
+                                    	<strong>
+                                        	<c:out value="${member.memberUsername}"/>
+                                        </strong>
                                     </td>
 
-                                    <td>
-                                        <c:out value="${member.cafeRole}"/>
-                                    </td>
+									<td>
+								        <c:choose>
+								
+								            <c:when test="${member.cafeRole eq 'OWNER'}">
+								                <span class="badge text-bg-success">
+								                    소유자
+								                </span>
+								            </c:when>
+								
+								            <c:when test="${member.cafeRole eq 'MANAGER'}">
+								                <span class="badge text-bg-primary">
+								                    운영자
+								                </span>
+								            </c:when>
+								
+								            <c:otherwise>
+								                <span class="badge text-bg-secondary">
+								                    일반 회원
+								                </span>
+								            </c:otherwise>
+								
+								        </c:choose>
+								    </td>
 
                                     <td>
                                         <c:out value="${member.status}"/>
@@ -88,6 +111,61 @@
                                     <td>
                                         <c:out value="${member.joinedAt}"/>
                                     </td>
+                                    
+                                    <td class="text-end">
+
+								        <c:choose>
+								
+								            <%-- OWNER는 역할 변경 불가 --%>
+								            <c:when test="${member.cafeRole eq 'OWNER'}">
+								
+								                <span class="small text-muted">
+								                    변경 불가
+								                </span>
+								
+								            </c:when>
+								
+								            <c:otherwise>
+								
+								                <form method="post"
+								                      action="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/member/${member.memberUsername}/role"
+								                      class="d-flex justify-content-end
+								                             align-items-center gap-2">
+								
+								                    <input type="hidden"
+								                           name="${_csrf.parameterName}"
+								                           value="${_csrf.token}">
+								
+								                    <select name="cafeRole"
+								                            class="form-select form-select-sm"
+								                            style="width: 130px;">
+								
+								                        <option value="MEMBER"
+								                            ${member.cafeRole eq 'MEMBER'
+								                                ? 'selected' : ''}>
+								                            일반 회원
+								                        </option>
+								
+								                        <option value="MANAGER"
+								                            ${member.cafeRole eq 'MANAGER'
+								                                ? 'selected' : ''}>
+								                            운영자
+								                        </option>
+								
+								                    </select>
+								
+								                    <button type="submit"
+								                            class="btn btn-sm btn-outline-success">
+								                        변경
+								                    </button>
+								
+								                </form>
+								
+								            </c:otherwise>
+								
+								        </c:choose>
+								
+								    </td>
                                 </tr>
 
                             </c:forEach>

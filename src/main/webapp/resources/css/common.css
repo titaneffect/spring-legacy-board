@@ -1322,3 +1322,47 @@ body {
         width: 100%;
     }
 }
+
+
+/* 카페 가입 상태 */
+
+.cafe-membership-area {
+    margin-top: 18px;
+    padding-top: 18px;
+
+    border-top: 1px solid var(--cafe-border);
+}
+
+.cafe-membership-area form {
+    margin: 0;
+}
+
+.cafe-membership-status {
+    min-height: 44px;
+    padding: 0 13px;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    background-color: #edf9f2;
+    border-radius: 6px;
+
+    color: var(--cafe-text-light);
+    font-size: 0.82rem;
+}
+
+.cafe-membership-status strong {
+    margin-left: auto;
+
+    color: var(--cafe-green-dark);
+    font-size: 0.85rem;
+}
+
+.cafe-membership-dot {
+    width: 7px;
+    height: 7px;
+
+    background-color: var(--cafe-green);
+    border-radius: 50%;
+}

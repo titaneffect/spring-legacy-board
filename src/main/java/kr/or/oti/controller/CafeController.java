@@ -18,7 +18,9 @@ import kr.or.oti.domain.CafeBoardAccessLevel;
 import kr.or.oti.domain.CafeBoardType;
 import kr.or.oti.dto.CafeBoardDTO;
 import kr.or.oti.dto.CafeDTO;
+import kr.or.oti.dto.CafeMemberDTO;
 import kr.or.oti.service.CafeBoardService;
+import kr.or.oti.service.CafeMemberService;
 import kr.or.oti.service.CafeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +33,7 @@ public class CafeController {
 
 	private final CafeService cafeService;
 	private final CafeBoardService cafeBoardService;
+	private final CafeMemberService cafeMemberService;
 
 	@GetMapping
 	public String list(Model model) {
@@ -39,10 +42,21 @@ public class CafeController {
 	}
 
 	@GetMapping("/{cafeId:\\d+}")
-	public String read(@PathVariable("cafeId") Long cafeId, Model model) {
+	public String read(@PathVariable("cafeId") Long cafeId, Principal principal,
+			Model model) {
+		
 		// 카페가 존재하는지 먼저 확인
 		model.addAttribute("cafe", cafeService.get(cafeId));
 		model.addAttribute("cafeBoardList", cafeBoardService.getList(cafeId));
+		
+		CafeMemberDTO currentCafeMember = null;
+		
+		if(principal != null) {
+			currentCafeMember = cafeMemberService.get(cafeId, principal.getName());
+		}
+		
+		model.addAttribute("currentCafeMember", currentCafeMember);
+		
 		return "cafe/read";
 	}
 
