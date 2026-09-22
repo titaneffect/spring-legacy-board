@@ -59,10 +59,12 @@
             게시판
         </h2>
 
-        <a class="cafe-sidebar-link active"
-           href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post">
-            전체글보기
-        </a>
+        <c:forEach var="menuBoard" items="${cafeBoardList}">
+		    <a class="cafe-sidebar-link ${menuBoard.cafeBoardId eq cafeBoard.cafeBoardId ? 'active' : ''}"
+		       href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${menuBoard.cafeBoardId}/post">
+		        <c:out value="${menuBoard.boardName}"/>
+		    </a>
+		</c:forEach>
 
     </nav>
 

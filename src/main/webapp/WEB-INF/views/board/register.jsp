@@ -32,8 +32,8 @@
                     <header class="cafe-form-header">
 
                         <span class="cafe-form-category">
-                            전체글보기
-                        </span>
+						    <c:out value="${cafeBoard.boardName}"/>
+						</span>
 
                         <h1>
                             게시글 작성

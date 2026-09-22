@@ -118,7 +118,7 @@
 				            <c:forEach var="cafeBoard"
 				                       items="${cafeBoardList}">
 				
-				                <div class="list-group-item px-0 py-3">
+				                <div class="list-group-item px-3 py-3 cafe-board-row">
 				
 				                    <div class="d-flex
 				                                justify-content-between
@@ -126,7 +126,7 @@
 				                                gap-3">
 				
 				                        <div>
-				                        	<a href="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/board/${cafeBoard.cafeBoardId}/post">
+				                        	<a class="cafe-board-open" href="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/board/${cafeBoard.cafeBoardId}/post">
 					                            <strong class="d-block mb-1">
 					                                <c:out value="${cafeBoard.boardName}"/>
 					                            </strong>
@@ -166,10 +166,10 @@
 										                      eq cafe.ownerUsername}">
 										
 										        <a href="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/board/${cafeBoard.cafeBoardId}/modify"
-										           class="btn btn-sm btn-outline-secondary">
-										            관리
-										        </a>
-										
+												   class="btn btn-sm btn-outline-secondary cafe-board-manage">
+												    관리
+												</a>
+
 										    </c:if>
 										
 										</div>

@@ -33,8 +33,8 @@
                     <header class="cafe-post-header">
 
                         <span class="cafe-post-category">
-                            전체글보기
-                        </span>
+						    <c:out value="${cafeBoard.boardName}"/>
+						</span>
 
                         <h1 class="cafe-post-title">
                             <c:out value="${board.title}"/>

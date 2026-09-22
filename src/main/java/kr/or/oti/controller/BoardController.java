@@ -64,6 +64,7 @@ public class BoardController {
 		model.addAttribute("pageRequest", pageRequestDTO);
 		model.addAttribute("cafeId", cafeId);
 		model.addAttribute("cafeBoard", cafeBoard);
+		model.addAttribute("cafeBoardList", cafeBoardService.getList(cafeId));
 		
 		return "board/list";
 	}
@@ -101,6 +102,7 @@ public class BoardController {
 		
 		model.addAttribute("cafeId", cafeId);
 	    model.addAttribute("cafeBoard", cafeBoard);
+	    model.addAttribute("cafeBoardList", cafeBoardService.getList(cafeId));
 		model.addAttribute("board", boardDTO);
 		model.addAttribute("pageRequest", pageRequestDTO);
 		model.addAttribute("attachList", boardAttachService.getList(bno));
@@ -128,6 +130,7 @@ public class BoardController {
 		
 		model.addAttribute("cafeId", cafeId);
 		model.addAttribute("cafeBoard", cafeBoard);
+		model.addAttribute("cafeBoardList", cafeBoardService.getList(cafeId));
 		model.addAttribute("board", new BoardDTO());
 		
 		return "board/register";
@@ -156,6 +159,7 @@ public class BoardController {
 			model.addAttribute("errors", bindingResult.getAllErrors());
 			model.addAttribute("cafeId", cafeId);
 			model.addAttribute("cafeBoard", cafeBoard);
+			model.addAttribute("cafeBoardList", cafeBoardService.getList(cafeId));
 			
 			return "board/register";
 		}
@@ -206,6 +210,7 @@ public class BoardController {
 		
 		model.addAttribute("cafeId", cafeId);
 		model.addAttribute("cafeBoard", cafeBoard);
+		model.addAttribute("cafeBoardList", cafeBoardService.getList(cafeId));
 		model.addAttribute("board", boardDTO);
 		model.addAttribute("pageRequest", pageRequestDTO);
 		model.addAttribute("attachList", boardAttachService.getList(bno));
@@ -250,6 +255,7 @@ public class BoardController {
 			
 			model.addAttribute("cafeId", cafeId);
 			model.addAttribute("cafeBoard", cafeBoard);
+			model.addAttribute("cafeBoardList", cafeBoardService.getList(cafeId));
 			model.addAttribute("pageRequest", pageRequestDTO);
 			model.addAttribute("attachList", boardAttachService.getList(bno));
 			

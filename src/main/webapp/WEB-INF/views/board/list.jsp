@@ -48,8 +48,8 @@
 	                            gap-3 mb-3">
 	
 	                    <h2 class="cafe-board-title mb-0">
-	                        전체글보기
-	                    </h2>
+						    <c:out value="${cafeBoard.boardName}"/>
+						</h2>
 	
 	                    <span class="text-secondary small">
 	                        총 ${pageResponse.total}개의 글
