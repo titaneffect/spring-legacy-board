@@ -4,6 +4,9 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"
     prefix="c" %>
+    
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions"
+ 	prefix="fn" %>
 
 <header class="cafe-topbar">
     <div class="container cafe-topbar-inner">
@@ -74,7 +77,7 @@
 
                         </c:url>
 
-                        <a href="${loginUrl}">
+                        <a href="${fn:escapeXml(loginUrl)}">
                             로그인
                         </a>
 
@@ -90,7 +93,7 @@
                 <c:otherwise>
 
                     <span class="cafe-login-user">
-                        ${pageContext.request.userPrincipal.name}
+                        ${fn:escapeXml(pageContext.request.userPrincipal.name)}
                     </span>
 
                     <form class="cafe-logout-form"

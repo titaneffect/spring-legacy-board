@@ -4,6 +4,9 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"
     prefix="c" %>
+    
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions"
+    prefix="fn" %>
 
 <!DOCTYPE html>
 <html>
@@ -34,7 +37,7 @@
 
             <p>
                 <strong>
-                    ${pageContext.request.userPrincipal.name}
+                    ${fn:escapeXml(pageContext.request.userPrincipal.name)}
                 </strong>
                 님으로 로그인했습니다.
             </p>

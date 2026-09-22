@@ -1,7 +1,11 @@
 package kr.or.oti.dto;
 
+import java.nio.charset.StandardCharsets;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+
+import org.springframework.web.util.UriUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,10 +41,14 @@ public class PageRequestDTO {
 		
 		builder.append("page=").append(page);
 		builder.append("&size=").append(size);
-		builder.append("&type=").append(type);
+		builder.append("&type=")
+				.append(UriUtils.encodeQueryParam(
+						type == null ? "" : type, StandardCharsets.UTF_8));
 		
 		if(keyword != null && !keyword.isEmpty()) {
-			builder.append("&keyword=").append(keyword);
+			builder.append("&keyword=")
+					.append(UriUtils.encodeQueryParam(
+							keyword, StandardCharsets.UTF_8));
 		}
 		
 		return builder.toString();

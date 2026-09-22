@@ -92,7 +92,7 @@
 	                        <input class="form-control"
 	                               type="text"
 	                               name="keyword"
-	                               value="${pageRequest.keyword}"
+	                               value="${fn:escapeXml(pageRequest.keyword)}"
 	                               placeholder="검색어를 입력하세요">
 	
 	                        <input type="hidden"
@@ -150,13 +150,13 @@
 	
 	                                    <td>
 	                                        <a class="board-title-link"
-	                                           href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post/${board.bno}?${pageRequest.link}">
+	                                           href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post/${board.bno}?${fn:escapeXml(pageRequest.link)}">
 	                                            <c:out value="${board.title}"/>
 	                                        </a>
 	                                    </td>
 	
 	                                    <td>
-	                                        ${board.writer}
+	                                        ${fn:escapeXml(board.writer)}
 	                                    </td>
 	
 	                                    <td class="text-center
@@ -192,15 +192,26 @@
 	                               justify-content-center">
 	
 	                        <c:if test="${pageResponse.prev}">
+	                            
+                            	<c:url var="prevUrl" value="/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post">
+                            		
+                            		<c:param name="page" value="${pageResponse.start - 1}" />
+                               		<c:param name="size" value="${pageResponse.size}" />
+                               		<c:param name="type" value="${pageRequest.type}" />
+                               		<c:param name="keyword" value="${pageRequest.keyword}" />	
+                               		
+                               	</c:url>
+                               	
 	                            <li class="page-item">
 	
 	                                <a class="page-link"
-	                                   href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post?page=${pageResponse.start - 1}&size=${pageResponse.size}&type=${pageRequest.type}&keyword=${pageRequest.keyword}">
+	                                   href="${fn:escapeXml(prevUrl)}">
 	                                    이전
 	                                </a>
 	
 	                            </li>
-	                        </c:if>
+	                            
+                            </c:if>
 	
 	                        <c:forEach var="pageNum"
 	                                   begin="${pageResponse.start}"
@@ -217,11 +228,20 @@
 	                                </c:when>
 	
 	                                <c:otherwise>
+	                                
+	                                	<c:url var="pageUrl" value="/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post">
+	                                	
+	                                		<c:param name="page" value="${pageNum}" />
+	                                		<c:param name="size" value="${pageResponse.size}" />
+	                                		<c:param name="type" value="${pageRequest.type}" />
+	                                		<c:param name="keyword" value="${pageRequest.keyword}" />	
+	                                	
+	                                	</c:url>
+	                                	
 	                                    <li class="page-item">
 	
-	                                        <a class="page-link"
-	                                           href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post?page=${pageNum}&size=${pageResponse.size}&type=${pageRequest.type}&keyword=${pageRequest.keyword}">
-	                                            ${pageNum}
+	                                        <a class="page-link" href="${fn:escapeXml(pageUrl)}">
+	                                        	${pageNum}
 	                                        </a>
 	
 	                                    </li>
@@ -231,13 +251,23 @@
 	                        </c:forEach>
 	
 	                        <c:if test="${pageResponse.next}">
+                      
+                            	<c:url var="nextUrl" value="/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post">
+                            		
+                            		<c:param name="page" value="${pageResponse.end + 1}" />
+                               		<c:param name="size" value="${pageResponse.size}" />
+                               		<c:param name="type" value="${pageRequest.type}" />
+                               		<c:param name="keyword" value="${pageRequest.keyword}" />	
+                               		
+                               	</c:url>
+	                               	
 	                            <li class="page-item">
 	
 	                                <a class="page-link"
-	                                   href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post?page=${pageResponse.end + 1}&size=${pageResponse.size}&type=${pageRequest.type}&keyword=${pageRequest.keyword}">
+	                                   href="${fn:escapeXml(nextUrl)}">
 	                                    다음
 	                                </a>
-	
+
 	                            </li>
 	                        </c:if>
 	

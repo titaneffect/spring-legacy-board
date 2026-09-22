@@ -98,7 +98,7 @@
 
                                                     <img class="attachment-image"
                                                          src="${pageContext.request.contextPath}/attachments/${attach.ano}/view"
-                                                         alt="${attach.fileName}">
+                                                         alt="${fn:escapeXml(attach.fileName)}">
 
                                                 </a>
 
@@ -131,14 +131,14 @@
                     <footer class="cafe-post-actions">
 
                         <a class="btn btn-outline-secondary"
-                           href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post?${pageRequest.link}">
+                           href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post?${fn:escapeXml(pageRequest.link)}">
                             목록
                         </a>
 
                         <c:if test="${canModify}">
 
                             <a class="btn cafe-primary-button"
-                               href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post/${board.bno}/modify?${pageRequest.link}">
+                               href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post/${board.bno}/modify?${fn:escapeXml(pageRequest.link)}">
                                 수정
                             </a>
 
@@ -174,7 +174,7 @@
                                           id="replyInput"
                                           name="reply"
                                           rows="3"
-                                          placeholder="댓글을 입력하세요">${replyInputRegister.reply}</textarea>
+                                          placeholder="댓글을 입력하세요">${fn:escapeXml(replyInputRegister.reply)}</textarea>
 
                                 <div class="text-end mt-2">
 
@@ -225,15 +225,15 @@
                                        items="${registerErrors}">
 
                                 <div>
-                                    ${error.defaultMessage}
+                                    <c:out value="${error.defaultMessage}" />
                                 </div>
 
                             </c:forEach>
                         </div>
                     </c:if>
 
-                    <div id="replyListArea"
-                         class="cafe-reply-list">
+                    <div id="replyListArea" class="cafe-reply-list"
+                    	data-login-username="${fn:escapeXml(pageContext.request.userPrincipal.name)}">
                     </div>
 
                 </section>
@@ -250,7 +250,7 @@
  		const csrfHeader = '${_csrf.headerName}';
  		const csrfToken = '${_csrf.token}';
  		
- 		const loginUsername = '${pageContext.request.userPrincipal.name}';
+ 		const loginUsername = document.querySelector('#replyListArea').dataset.loginUsername;
  		
  		function loadReplies(){
  			fetch(contextPath + '/api/replies?bno=' + bno)

@@ -4,6 +4,9 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"
     prefix="c"%>
+    
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions"
+    prefix="fn"%>
 
 <!DOCTYPE html>
 <html>
@@ -129,7 +132,7 @@
 										    <c:when test="${member.status eq 'BANNED'}">
 										        <form method="post"
 										              class="m-0"
-										              action="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/member/${member.memberUsername}/unban"
+										              action="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/member/${fn:escapeXml(member.memberUsername)}/unban"
 										              onsubmit="return confirm('이 회원의 강퇴를 해제하시겠습니까?');">
 										
 										            <input type="hidden"
@@ -149,7 +152,7 @@
 								            	<div class="d-flex justify-content-end align-items-center gap-2">
 								
 									                <form method="post"
-									                      action="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/member/${member.memberUsername}/role"
+									                      action="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/member/${fn:escapeXml(member.memberUsername)}/role"
 									                      class="d-flex justify-content-end
 									                             align-items-center gap-2">
 									
@@ -184,7 +187,7 @@
 									                
 									                <form method="post"
 											              class="m-0"
-											              action="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/member/${member.memberUsername}/ban"
+											              action="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/member/${fn:escapeXml(member.memberUsername)}/ban"
 											              onsubmit="return confirm('이 회원을 강퇴하시겠습니까?\n강퇴된 회원은 다시 가입할 수 없습니다.');">
 											
 											            <input type="hidden"

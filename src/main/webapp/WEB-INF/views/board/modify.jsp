@@ -68,15 +68,15 @@
 
                         <input type="hidden"
                                name="type"
-                               value="${pageRequest.type}">
+                               value="${fn:escapeXml(pageRequest.type)}">
 
                         <input type="hidden"
                                name="keyword"
-                               value="${pageRequest.keyword}">
+                               value="${fn:escapeXml(pageRequest.keyword)}">
 
                         <input type="hidden"
                                name="writer"
-                               value="${board.writer}">
+                               value="${fn:escapeXml(board.writer)}">
 
                         <!-- 제목 -->
                         <div class="mb-4">
@@ -137,7 +137,7 @@
                                                         'image/')}">
 
                                                     <img src="${pageContext.request.contextPath}/attachments/${attach.ano}/view"
-                                                         alt="${attach.fileName}">
+                                                         alt="${fn:escapeXml(attach.fileName)}">
 
                                                 </c:when>
 
@@ -157,7 +157,7 @@
 
                                             <button class="attach-remove-button"
                                                     type="button"
-                                                    aria-label="${attach.fileName} 삭제">
+                                                    aria-label="${fn:escapeXml(attach.fileName)} 삭제">
                                                 ×
                                             </button>
 
@@ -217,7 +217,7 @@
                         <div class="cafe-form-actions">
 
                             <a class="btn btn-outline-secondary"
-                               href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post/${board.bno}?${pageRequest.link}">
+                               href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post/${board.bno}?${fn:escapeXml(pageRequest.link)}">
                                 취소
                             </a>
 

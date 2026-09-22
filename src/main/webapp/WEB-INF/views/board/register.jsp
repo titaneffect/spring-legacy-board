@@ -67,7 +67,7 @@
                         --%>
                         <input type="hidden"
                                name="writer"
-                               value="${pageContext.request.userPrincipal.name}">
+                               value="${fn:escapeXml(pageContext.request.userPrincipal.name)}">
 
                         <!-- 제목 -->
                         <div class="mb-4">
