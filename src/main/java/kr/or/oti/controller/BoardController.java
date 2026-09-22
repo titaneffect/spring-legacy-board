@@ -25,6 +25,7 @@ import kr.or.oti.service.BoardAttachService;
 import kr.or.oti.service.BoardService;
 import kr.or.oti.service.CafeBoardAccessService;
 import kr.or.oti.service.CafeBoardService;
+import kr.or.oti.util.BoardHtmlSanitizer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -85,6 +86,8 @@ public class BoardController {
 		}
 		
 		BoardDTO boardDTO = boardService.get(bno);
+		
+		model.addAttribute("safeContent", BoardHtmlSanitizer.sanitize(boardDTO.getContent()));
 		
 		// 다른 게시판의 글 번호를 URL로 넣는 경우 차단
 		if (!cafeBoardId.equals(boardDTO.getCafeBoardId())) {

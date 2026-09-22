@@ -168,6 +168,13 @@
 			<artifactId>jackson-datatype-jsr310</artifactId>
 			<version>2.15.4</version>
 		</dependency>
+		
+		<!-- OWASP Java HTML Sanitizer -->
+		<dependency>
+		    <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+		    <artifactId>owasp-java-html-sanitizer</artifactId>
+		    <version>20260313.1</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

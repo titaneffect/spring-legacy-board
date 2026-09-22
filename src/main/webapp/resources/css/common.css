@@ -458,6 +458,11 @@ body {
     overflow-wrap: anywhere;
 }
 
+.cafe-post-content img {
+    max-width: 100%;
+    height: auto;
+}
+
 /* 첨부파일 */
 
 .cafe-attachment-section {

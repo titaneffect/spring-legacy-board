@@ -68,6 +68,7 @@
 
             <span class="text-muted">
                 운영자:
+                <!--  OWASP java HTML Sanitizer 필요  -->
                 <strong>
                     <c:out value="${cafe.ownerUsername}"/>
                 </strong>

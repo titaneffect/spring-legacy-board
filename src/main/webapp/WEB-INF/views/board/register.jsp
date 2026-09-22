@@ -9,6 +9,11 @@
 	<title>게시판 등록</title>
 	
 	<jsp:include page="/WEB-INF/views/common/styles.jsp"/>
+	
+	<script src="https://cdn.tiny.cloud/1/qfb3wzju9uwoeoo1z3yvi05amppbej4jv3phc7r1v8xzstov/tinymce/8/tinymce.min.js"
+        referrerpolicy="origin"
+        crossorigin="anonymous">
+	</script>
 </head>
 <body>
 
@@ -167,6 +172,16 @@
             </section>
         </div>
     </main>
+
+<script>
+    tinymce.init({
+        selector: '#content',
+        plugins: 'lists link table media',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline | alignleft aligncenter alignright | bullist numlist | table link media',
+        menubar: false,
+        height: 450
+    });
+</script>
 
 </body>
 </html>

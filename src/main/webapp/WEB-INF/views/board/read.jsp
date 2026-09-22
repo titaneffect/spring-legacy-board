@@ -68,7 +68,7 @@
 
                     <!-- 게시글 내용 -->
                     <div class="cafe-post-content">
-                        <c:out value="${board.content}"/>
+                        ${safeContent}
                     </div>
 
                     <!-- 첨부파일 -->

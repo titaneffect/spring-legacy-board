@@ -9,6 +9,11 @@
 	<title><c:out value="${board.title}"/> 수정</title>
 	
 	<jsp:include page="/WEB-INF/views/common/styles.jsp"/>
+	
+	<script src="https://cdn.tiny.cloud/1/qfb3wzju9uwoeoo1z3yvi05amppbej4jv3phc7r1v8xzstov/tinymce/8/tinymce.min.js"
+        referrerpolicy="origin"
+        crossorigin="anonymous">
+	</script>
 </head>
 <body>
 
@@ -306,6 +311,19 @@
             );
         });
     </script>
+
+<script>
+    tinymce.init({
+        selector: '#content',
+        plugins: 'lists link table media image',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline | alignleft aligncenter alignright | bullist numlist | table link media image',
+        menubar: false,
+        convert_urls: true,
+        relative_urls: false,
+        remove_script_host: true,
+        height: 450
+    });
+</script>
 
 </body>
 </html>
