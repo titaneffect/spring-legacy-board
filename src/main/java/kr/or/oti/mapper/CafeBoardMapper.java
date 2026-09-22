@@ -10,6 +10,8 @@ public interface CafeBoardMapper {
 	
 	List<CafeBoardVO> selectByCafeId(@Param("cafeId")Long cafeId);
 	
+	CafeBoardVO selectById(@Param("cafeBoardId")Long cafeBoardId);
+	
 	CafeBoardVO selectOne(
 		@Param("cafeId")Long cafeId,
 		@Param("cafeBoardId")Long cafeBoardId

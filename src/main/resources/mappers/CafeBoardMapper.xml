@@ -29,6 +29,25 @@
 
     </select>
     
+    <select id="selectById" resultType="kr.or.oti.domain.CafeBoardVO">
+    	
+    	SELECT
+	        CAFE_BOARD_ID AS cafeBoardId,
+	        CAFE_ID AS cafeId,
+	        BOARD_NAME AS boardName,
+	        BOARD_TYPE AS boardType,
+	        READ_ROLE AS readRole,
+	        WRITE_ROLE AS writeRole,
+	        DISPLAY_ORDER AS displayOrder,
+	        STATUS,
+	        CREATED_AT AS createdAt,
+	        UPDATED_AT AS updatedAt
+	    FROM CAFE_BOARD
+	    WHERE CAFE_BOARD_ID = #{cafeBoardId}
+	      AND STATUS = 'ACTIVE'
+	      
+    </select>
+    
     <select id="selectOne"
         resultType="kr.or.oti.domain.CafeBoardVO">
 

@@ -8,6 +8,8 @@ public interface CafeBoardService {
 
 	List<CafeBoardDTO> getList(Long cafeId);
 	
+	CafeBoardDTO getById(Long cafeBoardId);
+	
 	CafeBoardDTO get(Long cafeId, Long cafeBoardId);
 	
 	Long register(CafeBoardDTO cafeBoardDTO);

@@ -135,8 +135,7 @@
                             목록
                         </a>
 
-                        <c:if test="${not empty pageContext.request.userPrincipal
-                            and pageContext.request.userPrincipal.name eq board.writer}">
+                        <c:if test="${canModify}">
 
                             <a class="btn cafe-primary-button"
                                href="${pageContext.request.contextPath}/cafe/${cafeId}/board/${cafeBoard.cafeBoardId}/post/${board.bno}/modify?${pageRequest.link}">
@@ -158,8 +157,9 @@
                     </div>
 
                     <c:choose>
-
-                        <c:when test="${not empty pageContext.request.userPrincipal}">
+                    
+						<%-- 댓글 작성 가능 --%>
+                        <c:when test="${canWrite}">
 
                             <form id="replyRegisterForm"
                                   class="cafe-reply-form"
@@ -185,10 +185,11 @@
 
                                 </div>
                             </form>
-
-                        </c:when>
-
-                        <c:otherwise>
+                            
+						</c:when>
+						
+						<%-- 비로그인 --%>
+                        <c:when test="${empty pageContext.request.userPrincipal}">
 
                             <div class="cafe-login-guide">
 
@@ -202,6 +203,15 @@
 
                             </div>
 
+                        </c:when>
+                        
+                        <%-- 로그인했지만 카페 등급이 부족함 --%>
+                        <c:otherwise>
+                        	
+                        	<div class="cafe-login-guide">
+                        		이 게시판의 댓글 작성 권한이 없습니다.
+                        	</div>
+                        	
                         </c:otherwise>
 
                     </c:choose>
@@ -322,7 +332,12 @@
  				replyBox.appendChild(content);
  				
  				// 자신의 댓글에만 수정,삭제 표시
- 				if(loginUsername !== '' && loginUsername === reply.replyer){
+ 				const canWriteReplies = '${canWrite}' === 'true'
+ 				
+ 				if(canWriteReplies
+ 						&& loginUsername !== ''
+ 						&& loginUsername === reply.replyer){
+ 					
  					const actions = document.createElement('div');
  					actions.className = 'reply-actions';
  					

@@ -90,9 +90,14 @@ public class BoardController {
 	        throw new BoardNotFoundException(bno);
 	    }
 		
-		boolean canWrite  = cafeBoardAccessService.canAccess(cafeId, username, cafeBoard.getWriteRole());
+		boolean canWrite  = cafeBoardAccessService.
+				canAccess(cafeId, username, cafeBoard.getWriteRole());
+		
+		boolean canModify = canWrite && username != null
+				&& username.equals(boardDTO.getWriter());
 		
 		model.addAttribute("canWrite", canWrite);
+		model.addAttribute("canModify", canModify);
 		
 		model.addAttribute("cafeId", cafeId);
 	    model.addAttribute("cafeBoard", cafeBoard);

@@ -27,6 +27,17 @@ public class CafeBoardServiceImpl implements CafeBoardService{
 	}
 	
 	@Override
+	public CafeBoardDTO getById(Long cafeBoardId) {
+		CafeBoardVO cafeBoard = cafeBoardMapper.selectById(cafeBoardId);
+		
+		if(cafeBoard == null) {
+			throw new CafeBoardNotFoundException(null, cafeBoardId);
+		}
+		
+		return VOtoDTO(cafeBoard);
+	}
+	
+	@Override
 	public CafeBoardDTO get(Long cafeId, Long cafeBoardId) {
 
 	    CafeBoardVO cafeBoardVO = cafeBoardMapper.selectOne(cafeId, cafeBoardId);
