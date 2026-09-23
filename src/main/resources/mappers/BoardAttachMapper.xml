@@ -14,10 +14,30 @@
 			UPLOAD_PATH AS uploadPath,
 			FILE_SIZE AS fileSize,
 			CONTENT_TYPE AS contentType,
+			ATTACH_USAGE AS attachUsage,
 			REGDATE AS regDate
 		FROM BOARD_ATTACH
 		WHERE BNO = #{bno}
 		ORDER BY ANO DESC
+	</select>
+	
+	<select id="selectByBnoAndUsage" resultType="kr.or.oti.domain.BoardAttachVO">
+	
+	    SELECT
+	        ANO,
+	        BNO,
+	        UUID,
+	        FILE_NAME AS fileName,
+	        UPLOAD_PATH AS uploadPath,
+	        FILE_SIZE AS fileSize,
+	        CONTENT_TYPE AS contentType,
+	        ATTACH_USAGE AS attachUsage,
+	        REGDATE AS regDate
+	    FROM BOARD_ATTACH
+	    WHERE BNO = #{bno}
+	      AND ATTACH_USAGE = #{attachUsage}
+	    ORDER BY ANO DESC
+	
 	</select>
 	
 	<select id="selectOne" resultType="kr.or.oti.domain.BoardAttachVO">
@@ -29,6 +49,7 @@
 			UPLOAD_PATH AS uploadPath,
 			FILE_SIZE AS fileSize,
 			CONTENT_TYPE AS contentType,
+			ATTACH_USAGE AS attachUsage,
 			REGDATE AS regDate
 		FROM BOARD_ATTACH
 		WHERE ANO = #{ano}
@@ -47,7 +68,8 @@
 			FILE_NAME,
 			UPLOAD_PATH,
 			FILE_SIZE,
-			CONTENT_TYPE
+			CONTENT_TYPE,
+			ATTACH_USAGE
 		)
 		VALUES
 		(
@@ -57,7 +79,8 @@
 			#{fileName},
 			#{uploadPath},
 			#{fileSize},
-			#{contentType}
+			#{contentType},
+			#{attachUsage}
 		)
 	</insert>
 	

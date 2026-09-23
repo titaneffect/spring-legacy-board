@@ -195,6 +195,11 @@ body {
 }
 
 /* 왼쪽 사이드바 */
+.cafe-sidebar-profile {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+}
 
 .cafe-sidebar-card,
 .cafe-sidebar-menu {
@@ -204,42 +209,6 @@ body {
 
 .cafe-sidebar-card {
     padding: 20px;
-}
-
-.cafe-profile-image {
-    width: 52px;
-    height: 52px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background-color: #e2f7eb;
-    border-radius: 50%;
-
-    color: var(--cafe-green);
-    font-weight: 700;
-}
-
-.cafe-write-button {
-    width: 100%;
-    min-height: 42px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background-color: var(--cafe-green);
-    border-radius: 4px;
-
-    color: #ffffff;
-    font-weight: 600;
-    text-decoration: none;
-}
-
-.cafe-write-button:hover {
-    background-color: var(--cafe-green-dark);
-    color: #ffffff;
 }
 
 .cafe-sidebar-title {
@@ -265,6 +234,85 @@ body {
 .cafe-sidebar-link.active {
     background-color: #edf9f2;
     color: var(--cafe-green-dark);
+}
+
+.cafe-sidebar-divider {
+    margin: 16px -20px 12px;
+    border-top: 1px solid var(--cafe-border);
+}
+
+.cafe-profile-content {
+    min-width: 0;
+    flex: 1;
+}
+
+.cafe-profile-image {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #eeeeee;
+    border: 1px solid #dddddd;
+    border-radius: 50%;
+
+    color: #ffffff;
+}
+
+.cafe-owner {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    color: var(--cafe-text);
+    font-size: 1rem;
+}
+
+.cafe-owner-badge {
+    padding: 1px 4px;
+
+    border: 1px solid var(--cafe-border);
+    border-radius: 2px;
+
+    color: var(--cafe-text-light);
+    font-size: 0.66rem;
+    font-weight: 400;
+}
+
+.cafe-created-date {
+    margin-top: 3px;
+
+    color: var(--cafe-text-light);
+    font-size: 0.75rem;
+}
+
+
+.cafe-write-button {
+    width: 100%;
+    min-height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--cafe-green);
+    border-radius: 4px;
+
+    color: #ffffff;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.cafe-write-button:hover {
+    background-color: var(--cafe-green-dark);
+    color: #ffffff;
+}
+
+.cafe-write-button-disabled {
+    background-color: #999999;
+    cursor: default;
 }
 
 /* 카페 상세 경로 */
@@ -453,14 +501,28 @@ body {
 .cafe-post-content {
     min-height: 260px;
     padding: 32px 4px;
-
-    white-space: pre-wrap;
+    
     overflow-wrap: anywhere;
 }
 
+.cafe-post-content p {
+    clear: both;
+    margin: 0 0 1em;
+}
+
 .cafe-post-content img {
-    max-width: 100%;
+    display: inline-block;
+
+    max-width: min(100%, 720px);
     height: auto;
+
+    margin-top: 18px;
+    margin-bottom: 18px;
+}
+
+.cafe-post-content iframe {
+    display: inline-block;
+    max-width: 100%;
 }
 
 /* 첨부파일 */

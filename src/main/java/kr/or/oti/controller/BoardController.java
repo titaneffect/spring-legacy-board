@@ -1,6 +1,7 @@
 package kr.or.oti.controller;
 
 import java.security.Principal;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -17,14 +18,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import kr.or.oti.domain.AttachUsage;
 import kr.or.oti.dto.BoardDTO;
 import kr.or.oti.dto.CafeBoardDTO;
+import kr.or.oti.dto.CafeDTO;
 import kr.or.oti.dto.PageRequestDTO;
 import kr.or.oti.exception.BoardNotFoundException;
 import kr.or.oti.service.BoardAttachService;
 import kr.or.oti.service.BoardService;
 import kr.or.oti.service.CafeBoardAccessService;
 import kr.or.oti.service.CafeBoardService;
+import kr.or.oti.service.CafeService;
 import kr.or.oti.util.BoardHtmlSanitizer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +41,7 @@ public class BoardController {
 
 	private final BoardService boardService;
 	private final BoardAttachService boardAttachService;
+	private final CafeService cafeService;
 	private final CafeBoardService cafeBoardService;
 	private final CafeBoardAccessService cafeBoardAccessService;
 
@@ -144,7 +149,9 @@ public class BoardController {
 			@PathVariable("cafeId") Long cafeId, @PathVariable("cafeBoardId") Long cafeBoardId,
 			@Valid @ModelAttribute("board") BoardDTO boardDTO,
 			BindingResult bindingResult, Model model, Principal principal,
-			@RequestParam(value = "uploadFiles", required = false) List<MultipartFile> uploadFiles) {
+			@RequestParam(value = "uploadFiles", required = false) List<MultipartFile> uploadFiles,
+			@RequestParam(value = "contentImages", required = false) List<MultipartFile> contentImages,
+			@RequestParam(value = "contentImageTokens", required = false) List<String> contentImageTokens) {
 
 		CafeBoardDTO cafeBoard = cafeBoardService.get(cafeId, cafeBoardId);
 		
@@ -178,8 +185,27 @@ public class BoardController {
 					continue;
 				}
 
-				boardAttachService.register(bno, uploadFile);
+				boardAttachService.register(bno, uploadFile, AttachUsage.FILE);
 			}
+		}
+		
+		// 본문 이미지 저장 및 주소 교체
+		String originalContent = boardDTO.getContent();
+		
+		String updatedContent = boardAttachService.registerContentImages(
+									                bno,
+									                originalContent,
+									                contentImages,
+									                contentImageTokens
+									            );
+
+		// 변경된 본문을 게시글에 반영
+		if (!updatedContent.equals(originalContent)) {	
+			
+		    boardDTO.setBno(bno);
+		    boardDTO.setContent(updatedContent);
+
+		    boardService.modify(boardDTO);
 		}
 
 		return "redirect:/cafe/" + cafeId + "/board/" + cafeBoardId + "/post/" + bno;
@@ -228,7 +254,9 @@ public class BoardController {
 			BindingResult bindingResult, PageRequestDTO pageRequestDTO,
 			Model model, Principal principal,
 			@RequestParam(value = "uploadFiles", required = false) List<MultipartFile> uploadFiles,
-			@RequestParam(value = "deleteAnoList", required = false) List<Long> deleteAnoList) {
+			@RequestParam(value = "deleteAnoList", required = false) List<Long> deleteAnoList,
+			@RequestParam(value = "contentImages", required = false) List<MultipartFile> contentImages,
+			@RequestParam(value = "contentImageTokens", required = false) List<String> contentImageTokens) {
 
 		// 1. DB에 원본 게시글 조회
 		BoardDTO savedBoard = boardService.get(bno);
@@ -270,7 +298,22 @@ public class BoardController {
 		boardDTO.setCafeBoardId(savedBoard.getCafeBoardId());
 		boardDTO.setWriter(savedBoard.getWriter());
 		
+		String updatedContent = boardAttachService.registerContentImages(
+										                bno,
+										                boardDTO.getContent(),
+										                contentImages,
+										                contentImageTokens
+										            );
+
+		boardDTO.setContent(updatedContent);
+		
 		boardService.modify(boardDTO);
+		
+		/*
+		 * 수정된 본문에서 제거된 기존 본문 이미지의
+		 * DB 정보와 실제 파일을 함께 삭제한다.
+		 */
+		boardAttachService.removeUnusedContentImages(bno, updatedContent);
 
 		if (uploadFiles != null) {
 			for (MultipartFile uploadFile : uploadFiles) {
@@ -278,7 +321,7 @@ public class BoardController {
 					continue;
 				}
 
-				boardAttachService.register(bno, uploadFile);
+				boardAttachService.register(bno, uploadFile, AttachUsage.FILE);
 			}
 		}
 
@@ -318,5 +361,22 @@ public class BoardController {
 		boardService.remove(bno);
 		
 		return "redirect:/cafe/" + cafeId + "/board/" + cafeBoardId + "/post";
+	}
+	
+	
+	@ModelAttribute
+	public void addCafeInfo(@PathVariable("cafeId") Long cafeId, Model model) {
+		CafeDTO cafe = cafeService.get(cafeId);
+		
+		model.addAttribute("cafe", cafe);
+		
+		String cafeCreatedDate = "";
+		
+		if(cafe.getCreatedAt() != null) {
+			cafeCreatedDate = cafe.getCreatedAt()
+								.format(DateTimeFormatter.ofPattern("yyyy.MM.dd."));
+		}
+		
+		model.addAttribute("cafeCreatedDate", cafeCreatedDate);
 	}
 }

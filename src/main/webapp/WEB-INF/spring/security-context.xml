@@ -12,6 +12,7 @@
 
 	<http>
 		<intercept-url pattern="/resources/**" access="permitAll" />
+		<intercept-url pattern="/favicon.ico" access="permitAll" />
 		<intercept-url pattern="/.well-known/**" access="permitAll" />
 			
 		<intercept-url pattern="/member/login" access="permitAll" />

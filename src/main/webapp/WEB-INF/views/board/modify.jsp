@@ -192,6 +192,9 @@
                             </div>
 
                         </div>
+                        
+                        <!-- TinyMCE에서 새로 선택한 본문 이미지 보관 -->
+						<div id="contentImageInputs"></div>
 
                         <!-- 검증 오류 -->
                         <c:if test="${not empty errors}">
@@ -312,18 +315,186 @@
         });
     </script>
 
-<script>
-    tinymce.init({
-        selector: '#content',
-        plugins: 'lists link table media image',
-        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline | alignleft aligncenter alignright | bullist numlist | table link media image',
-        menubar: false,
-        convert_urls: true,
-        relative_urls: false,
-        remove_script_host: true,
-        height: 450
-    });
-</script>
+	<script>
+	    let contentImageSequence = 0;
+	
+	    tinymce.init({
+	        selector: '#content',
+	
+	        plugins: 'lists link table media image',
+	
+	        toolbar: 'undo redo | blocks fontfamily fontsize | '
+	                + 'bold italic underline | '
+	                + 'alignleft aligncenter alignright | '
+	                + 'bullist numlist | table link media contentImage',
+	                
+            formats: {
+                alignleft: {
+                    selector: 'p,h1,h2,h3,h4,h5,h6',
+                    styles: {
+                        textAlign: 'left'
+                    }
+                },
+
+                aligncenter: {
+                    selector: 'p,h1,h2,h3,h4,h5,h6',
+                    styles: {
+                        textAlign: 'center'
+                    }
+                },
+
+                alignright: {
+                    selector: 'p,h1,h2,h3,h4,h5,h6',
+                    styles: {
+                        textAlign: 'right'
+                    }
+                }
+            },
+	
+	        menubar: false,
+	        convert_urls: false,
+	
+	        object_resizing: 'img',
+	        resize_img_proportional: true,
+	
+	        content_style:
+	            'p { '
+	            + 'clear: both; '
+	            + 'margin: 0 0 1em; '
+	            + '} '
+	            + 'img { '
+	            + 'display: inline-block; '
+	            + 'max-width: 720px; '
+	            + 'height: auto; '
+	            + 'margin-top: 16px; '
+	            + 'margin-bottom: 16px; '
+	            + '} '
+	            + 'iframe { '
+	            + 'display: inline-block; '
+	            + 'max-width: 100%; '
+	            + '}',
+	        
+	        height: 450,
+	
+	        setup: function(editor) {
+	        	
+	        	editor.on('init', function() {
+	        	    const lostImages = editor.dom.select(
+	        	        'img[src^="/pending-content-image/"]'
+	        	    );
+
+	        	    if (lostImages.length === 0) {
+	        	        return;
+	        	    }
+
+	        	    lostImages.forEach(function(image) {
+	        	        image.remove();
+	        	    });
+
+	        	    editor.save();
+	        	    alert('입력 오류로 선택한 본문 이미지가 초기화됐습니다. 이미지를 다시 삽입해주세요.');
+	        	});
+	        	
+  	            editor.ui.registry.addButton(
+	                'contentImage',
+	                {
+	                    icon: 'image',
+	                    tooltip: '본문 이미지 삽입',
+	
+	                    onAction: function() {
+	
+	                        const fileInput = document.createElement('input');
+	
+	                        fileInput.type = 'file';
+	                        fileInput.name = 'contentImages';
+	                        fileInput.accept =
+	                                'image/png, image/jpeg, image/gif, image/webp';
+	                        fileInput.hidden = true;
+	
+	                        fileInput.addEventListener('change', function() {
+	
+	                                const file = fileInput.files[0];
+	
+	                                if (!file) {
+	                                    return;
+	                                }
+	
+	                                const token = 'content-image-'
+			                                        + Date.now()
+			                                        + '-'
+			                                        + contentImageSequence++;
+	
+	                                const tokenInput = document.createElement('input');
+	
+	                                tokenInput.type = 'hidden';
+	                                tokenInput.name = 'contentImageTokens';
+	                                tokenInput.value = token;
+	
+	                                const inputContainer = document.querySelector('#contentImageInputs');
+	
+	                                inputContainer.appendChild(fileInput);
+	
+	                                inputContainer.appendChild(tokenInput);
+	
+	                                const previewUrl = URL.createObjectURL(file);
+	
+	                                const imageHtml = editor.dom.createHTML('img', {
+				                                                src: previewUrl,
+				                                                alt: file.name,
+				                                                'data-upload-token':
+				                                                    token
+				                                            }
+			                        );
+	                                
+	                                const imageBlockHtml =
+	                                    '<p style="text-align: left;">'
+	                                    + imageHtml
+	                                    + '</p>'
+	                                    + '<p><br></p>';
+	
+	                                editor.insertContent(imageBlockHtml);
+	                            },
+	                            {
+	                                once: true
+	                            }
+	                        );
+	
+	                        fileInput.click();
+	                    }
+	                }
+	            );
+	        }
+	    });
+	
+	    /*
+	     * 새로 선택한 본문 이미지만
+	     * 임시 토큰 주소로 변경한다.
+	     *
+	     * 기존 /attachments/{ano}/view 이미지는
+	     * data-upload-token이 없으므로 변경되지 않는다.
+	     */
+	    modifyForm.addEventListener(
+	        'submit',
+	        function() {
+	
+	            const editor = tinymce.get('content');
+	
+	            const newContentImages = editor.dom.select('img[data-upload-token]');
+	
+	            newContentImages.forEach(function(image) {
+	
+	                    const token = image.getAttribute('data-upload-token');
+	
+	                    image.setAttribute('src', '/pending-content-image/' + token);
+	
+	                    image.removeAttribute('data-upload-token');
+	                }
+	            );
+	
+	            editor.save();
+	        }
+	    );
+	</script>
 
 </body>
 </html>

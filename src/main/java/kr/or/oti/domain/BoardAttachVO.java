@@ -24,6 +24,9 @@ public class BoardAttachVO {
 	
 	private Long fileSize;
 	private String contentType;
+	private AttachUsage attachUsage;
 	
 	private LocalDateTime regDate;
+	
+	
 }

@@ -2,6 +2,7 @@ package kr.or.oti.dto;
 
 import java.time.LocalDateTime;
 
+import kr.or.oti.domain.AttachUsage;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -18,6 +19,7 @@ public class BoardAttachDTO {
 	
 	private Long fileSize;
 	private String contentType;
+	private AttachUsage attachUsage;
 	
 	private LocalDateTime regDate;
 }
