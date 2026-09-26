@@ -1,6 +1,7 @@
 package kr.or.oti.dto;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import kr.or.oti.domain.CafeMemberStatus;
 import kr.or.oti.domain.CafeRole;
@@ -26,4 +27,11 @@ public class CafeMemberDTO {
 	private CafeMemberStatus status;
 	
 	private LocalDateTime joinedAt;
+	
+	public String getJoinedAtDisplay() {
+	    if (joinedAt == null) {
+	        return null;
+	    }
+	    return joinedAt.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
+	}
 }

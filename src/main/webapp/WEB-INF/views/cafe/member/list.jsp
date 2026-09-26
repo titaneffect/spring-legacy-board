@@ -111,9 +111,18 @@
                                         <c:out value="${member.status}"/>
                                     </td>
 
-                                    <td>
-                                        <c:out value="${member.joinedAt}"/>
-                                    </td>
+									<td class="text-nowrap">
+									    <c:choose>
+									        <c:when test="${empty member.joinedAt}">
+									            <span class="text-muted">—</span>
+									        </c:when>
+									        <c:otherwise>
+									            <span class="small fw-medium">
+									                <c:out value="${member.joinedAtDisplay}"/>
+									            </span>
+									        </c:otherwise>
+									    </c:choose>
+									</td>
                                     
                                     <td class="text-end">
 

@@ -54,7 +54,8 @@
 			CAFE_ID,
 			MEMBER_USERNAME,
 			CAFE_ROLE,
-			STATUS
+			STATUS,
+			JOINED_AT
 		)
 		VALUES
 		(
@@ -62,7 +63,11 @@
 			#{cafeId},
 			#{memberUsername},
 			#{cafeRole},
-			#{status}
+			#{status},
+			CASE WHEN #{status} = 'ACTIVE'
+				THEN SYSDATE
+				ELSE NULL
+				END
 		)
 	</insert>
 	
@@ -104,7 +109,8 @@
 	
 	<update id="reject">
 	    UPDATE CAFE_MEMBER
-	    SET STATUS = 'REJECTED'
+	    SET STATUS = 'REJECTED',
+	        JOINED_AT = NULL
 	    WHERE CAFE_ID = #{cafeId}
 	      AND MEMBER_USERNAME = #{memberUsername}
 	      AND STATUS = 'PENDING'
@@ -127,7 +133,7 @@
 	    SET
 	        STATUS = 'PENDING',
 	        CAFE_ROLE = 'MEMBER',
-	        JOINED_AT = SYSDATE
+	        JOINED_AT = NULL
 	    WHERE CAFE_ID = #{cafeId}
 	      AND MEMBER_USERNAME = #{memberUsername}
 	      AND STATUS IN ('WITHDRAWN', 'REJECTED')
