@@ -7,9 +7,9 @@
 <head>
 	<meta charset="UTF-8">
 	<title><c:out value="${board.title}"/> 수정</title>
-	
+
 	<jsp:include page="/WEB-INF/views/common/styles.jsp"/>
-	
+
 	<script src="https://cdn.tiny.cloud/1/qfb3wzju9uwoeoo1z3yvi05amppbej4jv3phc7r1v8xzstov/tinymce/8/tinymce.min.js"
         referrerpolicy="origin"
         crossorigin="anonymous">
@@ -192,7 +192,7 @@
                             </div>
 
                         </div>
-                        
+
                         <!-- TinyMCE에서 새로 선택한 본문 이미지 보관 -->
 						<div id="contentImageInputs"></div>
 
@@ -275,6 +275,37 @@
         </div>
     </main>
 
+    <dialog id="kakaoPlaceDialog"
+	        class="border rounded-3 p-4 shadow"
+	        style="width: min(90vw, 700px);">
+	    <h2 class="h5 mb-3">장소 삽입</h2>
+
+	    <div class="d-flex gap-2 mb-3">
+	        <input id="placeKeyword"
+	               class="form-control"
+	               type="text"
+	               placeholder="장소 이름을 검색하세요">
+	        <button id="placeSearchButton"
+	                class="btn btn-outline-primary"
+	                type="button">검색</button>
+	    </div>
+
+	    <div id="placeResult" class="mb-2"></div>
+	    <div id="placeList" class="list-group mb-3"></div>
+	    <div id="placeMap" style="width:100%; height:300px;"></div>
+
+	    <div class="text-end mt-3">
+	    	<button id="insertPlaceButton"
+			        class="btn cafe-primary-button"
+			        type="button"
+			        disabled>본문에 삽입</button>
+
+	        <button id="closePlaceDialog"
+	                class="btn btn-outline-secondary"
+	                type="button">닫기</button>
+	    </div>
+	</dialog>
+
     <!-- 기존 첨부파일 삭제 예약 JavaScript -->
 
     <script>
@@ -315,19 +346,26 @@
         });
     </script>
 
+	<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=d518e991a40570dc43d9b870e07871e0&libraries=services"></script>
 	<script>
 	    let contentImageSequence = 0;
-	
+
+	    let placeBookmark = null;
+	    let placeMap = null;
+	    let placeMarker = null;
+	    let selectedPlace = null;
+	    const placeSearch = new kakao.maps.services.Places();
+
 	    tinymce.init({
 	        selector: '#content',
-	
+
 	        plugins: 'lists link table media image',
-	
+
 	        toolbar: 'undo redo | blocks fontfamily fontsize | '
 	                + 'bold italic underline | '
 	                + 'alignleft aligncenter alignright | '
-	                + 'bullist numlist | table link media contentImage',
-	                
+	                + 'bullist numlist | table link contentImage media kakaoPlace',
+
             formats: {
                 alignleft: {
                     selector: 'p,h1,h2,h3,h4,h5,h6',
@@ -350,13 +388,13 @@
                     }
                 }
             },
-	
+
 	        menubar: false,
 	        convert_urls: false,
-	
+
 	        object_resizing: 'img',
 	        resize_img_proportional: true,
-	
+
 	        content_style:
 	            'p { '
 	            + 'clear: both; '
@@ -373,11 +411,11 @@
 	            + 'display: inline-block; '
 	            + 'max-width: 100%; '
 	            + '}',
-	        
+
 	        height: 450,
-	
+
 	        setup: function(editor) {
-	        	
+
 	        	editor.on('init', function() {
 	        	    const lostImages = editor.dom.select(
 	        	        'img[src^="/pending-content-image/"]'
@@ -394,50 +432,92 @@
 	        	    editor.save();
 	        	    alert('입력 오류로 선택한 본문 이미지가 초기화됐습니다. 이미지를 다시 삽입해주세요.');
 	        	});
-	        	
+
+	        	editor.ui.registry.addButton('kakaoPlace', {
+	        	    text: '장소 삽입',
+	        	    tooltip: '카카오맵 장소 삽입',
+	        	    onAction: function () {
+	        	        placeBookmark = editor.selection.getBookmark(2, true);
+
+	        	        selectedPlace = null;
+
+	        	        document.getElementById('placeKeyword').value = '';
+	        	        document.getElementById('placeResult').textContent = '';
+	        	        document.getElementById('placeList').replaceChildren();
+
+	        	        if (placeMarker) {
+	        	            placeMarker.setMap(null);
+	        	            placeMarker = null;
+	        	        }
+
+	        	        document.getElementById('insertPlaceButton').disabled = true;
+
+	        	        document.getElementById('kakaoPlaceDialog').showModal();
+
+	        	        if (!placeMap) {
+	        	            placeMap = new kakao.maps.Map(
+	        	                document.getElementById('placeMap'),
+	        	                {
+	        	                    center: new kakao.maps.LatLng(
+	        	                    		37.495062742517085,
+	        	                    	    127.12249058886933
+	        	                   	),
+	        	                    level: 3
+	        	                }
+	        	            );
+	        	        } else {
+	        	            placeMap.relayout();
+	        	            placeMap.setCenter(new kakao.maps.LatLng(
+	        	            		37.495062742517085,
+    	                    	    127.12249058886933
+    	                   	));
+	        	        }
+	        	    }
+	        	});
+
   	            editor.ui.registry.addButton(
 	                'contentImage',
 	                {
 	                    icon: 'image',
 	                    tooltip: '본문 이미지 삽입',
-	
+
 	                    onAction: function() {
-	
+
 	                        const fileInput = document.createElement('input');
-	
+
 	                        fileInput.type = 'file';
 	                        fileInput.name = 'contentImages';
 	                        fileInput.accept =
 	                                'image/png, image/jpeg, image/gif, image/webp';
 	                        fileInput.hidden = true;
-	
+
 	                        fileInput.addEventListener('change', function() {
-	
+
 	                                const file = fileInput.files[0];
-	
+
 	                                if (!file) {
 	                                    return;
 	                                }
-	
+
 	                                const token = 'content-image-'
 			                                        + Date.now()
 			                                        + '-'
 			                                        + contentImageSequence++;
-	
+
 	                                const tokenInput = document.createElement('input');
-	
+
 	                                tokenInput.type = 'hidden';
 	                                tokenInput.name = 'contentImageTokens';
 	                                tokenInput.value = token;
-	
+
 	                                const inputContainer = document.querySelector('#contentImageInputs');
-	
+
 	                                inputContainer.appendChild(fileInput);
-	
+
 	                                inputContainer.appendChild(tokenInput);
-	
+
 	                                const previewUrl = URL.createObjectURL(file);
-	
+
 	                                const imageHtml = editor.dom.createHTML('img', {
 				                                                src: previewUrl,
 				                                                alt: file.name,
@@ -445,27 +525,130 @@
 				                                                    token
 				                                            }
 			                        );
-	                                
+
 	                                const imageBlockHtml =
 	                                    '<p style="text-align: left;">'
 	                                    + imageHtml
 	                                    + '</p>'
 	                                    + '<p><br></p>';
-	
+
 	                                editor.insertContent(imageBlockHtml);
 	                            },
 	                            {
 	                                once: true
 	                            }
 	                        );
-	
+
 	                        fileInput.click();
 	                    }
 	                }
 	            );
 	        }
 	    });
-	
+
+	    document.getElementById('placeSearchButton')
+	    .addEventListener('click', function () {
+	        const keyword = document.getElementById('placeKeyword').value.trim();
+	        const resultArea = document.getElementById('placeResult');
+	        const placeList = document.getElementById('placeList');
+
+	        placeList.replaceChildren();
+	        selectedPlace = null;
+	        document.getElementById('insertPlaceButton').disabled = true;
+
+	        if (!keyword) {
+	            resultArea.textContent = '검색어를 입력하세요.';
+	            return;
+	        }
+
+	        placeSearch.keywordSearch(keyword, function (results, status) {
+	            if (status !== kakao.maps.services.Status.OK) {
+	                resultArea.textContent =
+	                    '검색 결과가 없거나 검색에 실패했습니다.';
+	                return;
+	            }
+
+	            resultArea.textContent = '삽입할 장소를 선택하세요.';
+
+	            results.forEach(function (place) {
+	                const button = document.createElement('button');
+	                button.type = 'button';
+	                button.className =
+	                    'list-group-item list-group-item-action';
+
+	                const address =
+	                    place.road_address_name || place.address_name;
+	                button.textContent =
+	                    place.place_name + ' — ' + address;
+
+	                button.addEventListener('click', function () {
+	                    const position = new kakao.maps.LatLng(
+	                        Number(place.y), Number(place.x)
+	                    );
+
+	                    placeMap.setCenter(position);
+
+	                    if (placeMarker) {
+	                        placeMarker.setMap(null);
+	                    }
+
+	                    placeMarker = new kakao.maps.Marker({
+	                        map: placeMap,
+	                        position: position
+	                    });
+
+	                    selectedPlace = place;
+		                document.getElementById('insertPlaceButton').disabled = false;
+
+		                resultArea.textContent = '선택한 장소: ' + place.place_name;
+		                placeList.replaceChildren(); // 선택했으므로 검색 결과 목록을 접는다
+	                });
+
+	                placeList.appendChild(button);
+	            });
+	        });
+	    });
+
+	    document.getElementById('insertPlaceButton')
+	    .addEventListener('click', function () {
+	        if (!selectedPlace) {
+	            return;
+	        }
+
+	        const lat = Number(selectedPlace.y);
+	        const lng = Number(selectedPlace.x);
+
+	        if (!Number.isFinite(lat) || lat < -90 || lat > 90
+	                || !Number.isFinite(lng) || lng < -180 || lng > 180) {
+	            alert('장소 좌표가 올바르지 않습니다.');
+	            return;
+	        }
+
+	        const link = document.createElement('a');
+	        link.href = 'https://map.kakao.com/link/map/' + lat + ',' + lng;
+	        link.textContent = '📍 ' + selectedPlace.place_name;
+
+	        const paragraph = document.createElement('p');
+	        paragraph.appendChild(link);
+
+	        document.getElementById('kakaoPlaceDialog').close();
+
+	        const editor = tinymce.get('content');
+	        editor.focus();
+
+	        if (placeBookmark) {
+	            editor.selection.moveToBookmark(placeBookmark);
+	        }
+
+	        editor.insertContent(paragraph.outerHTML + '<p><br></p>');
+	        editor.save();
+	    });
+
+	    document.getElementById('closePlaceDialog')
+	    .addEventListener('click', function () {
+	        document.getElementById('kakaoPlaceDialog').close();
+	    });
+
 	    /*
 	     * 새로 선택한 본문 이미지만
 	     * 임시 토큰 주소로 변경한다.
@@ -476,21 +659,21 @@
 	    modifyForm.addEventListener(
 	        'submit',
 	        function() {
-	
+
 	            const editor = tinymce.get('content');
-	
+
 	            const newContentImages = editor.dom.select('img[data-upload-token]');
-	
+
 	            newContentImages.forEach(function(image) {
-	
+
 	                    const token = image.getAttribute('data-upload-token');
-	
+
 	                    image.setAttribute('src', '/pending-content-image/' + token);
-	
+
 	                    image.removeAttribute('data-upload-token');
 	                }
 	            );
-	
+
 	            editor.save();
 	        }
 	    );

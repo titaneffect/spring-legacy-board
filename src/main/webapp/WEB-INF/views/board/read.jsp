@@ -70,6 +70,61 @@
                     <div class="cafe-post-content">
                         ${safeContent}
                     </div>
+                    
+                    <c:if test="${fn:contains(safeContent, 'https://map.kakao.com/link/map/')}">
+					    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=d518e991a40570dc43d9b870e07871e0"></script>
+					    <script>
+					        document.querySelectorAll(
+					            '.cafe-post-content a[href^="https://map.kakao.com/link/map/"]'
+					        ).forEach(function (link) {
+					            const url = new URL(link.href);
+					            const match = url.pathname.match(
+					                /^\/link\/map\/(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)$/
+					            );
+					
+					            if (url.origin !== 'https://map.kakao.com' || !match) {
+					                return;
+					            }
+					
+					            const lat = Number(match[1]);
+					            const lng = Number(match[2]);
+					
+					            if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+					                return;
+					            }
+					
+					            // 우리가 삽입한 '장소 링크만 있는 문단'을 지도 카드로 바꾼다.
+					            const paragraph = link.parentElement;
+					            if (paragraph.tagName !== 'P'
+					                    || paragraph.children.length !== 1
+					                    || paragraph.textContent.trim() !== link.textContent.trim()) {
+					                return;
+					            }
+					
+					            const card = document.createElement('div');
+					            card.className = 'cafe-place-card mb-3';
+					
+					            const mapElement = document.createElement('div');
+					            mapElement.style.width = '100%';
+					            mapElement.style.height = '320px';
+					
+					            card.appendChild(mapElement);
+					            card.appendChild(link); // 장소 링크도 남겨둔다.
+					            paragraph.replaceWith(card);
+					
+					            const position = new kakao.maps.LatLng(lat, lng);
+					            const map = new kakao.maps.Map(mapElement, {
+					                center: position,
+					                level: 3
+					            });
+					
+					            new kakao.maps.Marker({
+					                map: map,
+					                position: position
+					            });
+					        });
+					    </script>
+					</c:if>
 
                     <!-- 첨부파일 -->
                     <c:if test="${not empty attachList}">
