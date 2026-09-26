@@ -128,6 +128,33 @@
 								
 								            </c:when>
 								            
+								            <c:when test="${member.status eq 'PENDING'}">
+											    <div class="d-flex justify-content-end gap-2">
+											        <form method="post"
+											              action="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/member/approve">
+											            <input type="hidden" name="${_csrf.parameterName}"
+											                   value="${_csrf.token}">
+											            <input type="hidden" name="memberUsername"
+											                   value="${fn:escapeXml(member.memberUsername)}">
+											            <button type="submit" class="btn btn-sm btn-success">
+											                승인
+											            </button>
+											        </form>
+											
+											        <form method="post"
+											              action="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/member/reject"
+											              onsubmit="return confirm('이 가입 신청을 거절하시겠습니까?');">
+											            <input type="hidden" name="${_csrf.parameterName}"
+											                   value="${_csrf.token}">
+											            <input type="hidden" name="memberUsername"
+											                   value="${fn:escapeXml(member.memberUsername)}">
+											            <button type="submit" class="btn btn-sm btn-outline-danger">
+											                거절
+											            </button>
+											        </form>
+											    </div>
+											</c:when>
+								            
 								            <%-- 강퇴된 회원 --%>
 										    <c:when test="${member.status eq 'BANNED'}">
 										        <form method="post"
@@ -204,7 +231,7 @@
 								
 								            </c:when>
 								            
-								            <%-- 탈퇴 또는 승인 대기 --%>
+								            <%-- 가입 거절 또는 탈퇴한 회원 --%>
 										    <c:otherwise>
 										        <span class="small text-muted">
 										            관리 작업 없음

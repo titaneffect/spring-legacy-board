@@ -49,6 +49,24 @@ public class CafeMemberController {
 		return "redirect:/cafe/" + cafeId;
 	}
 	
+	@PostMapping("/approve")
+	public String approve(@PathVariable("cafeId") Long cafeId,
+	        @RequestParam("memberUsername") String memberUsername,
+	        Principal principal) {
+
+	    cafeMemberService.approve(cafeId, memberUsername, principal.getName());
+	    return "redirect:/cafe/" + cafeId + "/member";
+	}
+
+	@PostMapping("/reject")
+	public String reject(@PathVariable("cafeId") Long cafeId,
+	        @RequestParam("memberUsername") String memberUsername,
+	        Principal principal) {
+
+	    cafeMemberService.reject(cafeId, memberUsername, principal.getName());
+	    return "redirect:/cafe/" + cafeId + "/member";
+	}
+	
 	@PostMapping("/withdraw")
 	public String withdraw(@PathVariable("cafeId")Long cafeId, Principal principal) {
 		// 존재하지 않는 카페라면 404

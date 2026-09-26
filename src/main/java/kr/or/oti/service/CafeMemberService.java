@@ -11,7 +11,13 @@ public interface CafeMemberService {
 	
 	CafeMemberDTO get(Long cafeId, String memberUsername);
 	
+	CafeMemberDTO getIncludingInactive(Long cafeId, String memberUsername);
+	
 	void join(Long cafeId, String username);
+	
+	void approve(Long cafeId, String targetUsername, String requesterUsername);
+
+	void reject(Long cafeId, String targetUsername, String requesterUsername);
 	
 	void withdraw(Long cafeId, String username);
 	

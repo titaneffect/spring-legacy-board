@@ -39,7 +39,17 @@ public class CafeMemberServiceImpl implements CafeMemberService{
 	}
 	
 	@Override
+	public CafeMemberDTO getIncludingInactive(Long cafeId, String memberUsername) {
+	    CafeMemberVO member =
+	            cafeMemberMapper.selectOneAllStatus(cafeId, memberUsername);
+
+	    return member == null ? null : VOtoDTO(member);
+	}
+	
+	@Override
 	public void join(Long cafeId, String username) {
+		// 일반 회원 가입 신청
+		
 		CafeMemberVO existingMember = cafeMemberMapper.selectOneAllStatus(cafeId, username);
 		
 		// 가입 기록 자체가 없으면 최초 INSERT
@@ -48,12 +58,13 @@ public class CafeMemberServiceImpl implements CafeMemberService{
 											.cafeId(cafeId)
 											.memberUsername(username)
 											.cafeRole(CafeRole.MEMBER)
+											.status(CafeMemberStatus.PENDING)
 											.build();
 			
 			int result = cafeMemberMapper.insertOne(cafeMemberVO);
 			
 			if(result != 1) {
-				throw new IllegalStateException("카페 가입에 실패했습니다.");
+				throw new IllegalStateException("카페 가입 신청에 실패했습니다.");
 			}
 			
 			return;
@@ -65,11 +76,13 @@ public class CafeMemberServiceImpl implements CafeMemberService{
 		}
 		
 		// 자진 탈퇴한 회원은 기존 행을 복구
-		if(existingMember.getStatus() == CafeMemberStatus.WITHDRAWN) {
+		if(existingMember.getStatus() == CafeMemberStatus.WITHDRAWN
+				|| existingMember.getStatus() == CafeMemberStatus.REJECTED) {
+			
 			int result = cafeMemberMapper.reactivate(cafeId, username);
 			
 			if(result != 1) {
-				throw new IllegalStateException("카페 재가입에 실패했습니다.");
+				throw new IllegalStateException("카페 재가입 신청에 실패했습니다.");
 			}
 			
 			return;
@@ -87,6 +100,45 @@ public class CafeMemberServiceImpl implements CafeMemberService{
 		
 		throw new IllegalStateException("처리할 수 없는 회원 상태입니다.");
 		
+	}
+	
+	@Override
+	public void approve(Long cafeId, String targetUsername,
+	                    String requesterUsername) {
+	    validatePendingRequest(cafeId, targetUsername, requesterUsername);
+
+	    if (cafeMemberMapper.approve(cafeId, targetUsername) != 1) {
+	        throw new IllegalStateException("가입 승인에 실패했습니다.");
+	    }
+	}
+
+	@Override
+	public void reject(Long cafeId, String targetUsername,
+	                   String requesterUsername) {
+	    validatePendingRequest(cafeId, targetUsername, requesterUsername);
+
+	    if (cafeMemberMapper.reject(cafeId, targetUsername) != 1) {
+	        throw new IllegalStateException("가입 거절에 실패했습니다.");
+	    }
+	}
+
+	private void validatePendingRequest(Long cafeId, String targetUsername,
+	                                    String requesterUsername) {
+	    CafeMemberVO requester =
+	            cafeMemberMapper.selectOne(cafeId, requesterUsername);
+
+	    if (requester == null || requester.getCafeRole() != CafeRole.OWNER) {
+	        throw new AccessDeniedException(
+	                "카페 소유자만 가입 신청을 처리할 수 있습니다.");
+	    }
+
+	    // selectOne은 ACTIVE만 조회하므로 신청자는 전체 상태 조회를 사용
+	    CafeMemberVO target =
+	            cafeMemberMapper.selectOneAllStatus(cafeId, targetUsername);
+
+	    if (target == null || target.getStatus() != CafeMemberStatus.PENDING) {
+	        throw new IllegalStateException("승인 대기 중인 가입 신청이 아닙니다.");
+	    }
 	}
 	
 	@Override

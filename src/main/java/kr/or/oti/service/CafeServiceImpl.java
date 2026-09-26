@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.or.oti.domain.CafeMemberStatus;
 import kr.or.oti.domain.CafeMemberVO;
 import kr.or.oti.domain.CafeRole;
 import kr.or.oti.domain.CafeVO;
@@ -44,6 +45,8 @@ public class CafeServiceImpl implements CafeService{
 	@Override
 	@Transactional
 	public Long register(CafeDTO cafeDTO, String username) {
+		// 카페 소유자 등록
+		
 		// 1. DTO를 카페 VO로 변환한다.
 		CafeVO cafeVO = CafeVO.builder()
 							.cafeName(cafeDTO.getCafeName())
@@ -66,6 +69,7 @@ public class CafeServiceImpl implements CafeService{
 									.cafeId(cafeId)
 									.memberUsername(username)
 									.cafeRole(CafeRole.OWNER)
+									.status(CafeMemberStatus.ACTIVE)
 									.build();
 		
 		int ownerResult = cafeMemberMapper.insertOne(owner);

@@ -52,7 +52,7 @@ public class CafeController {
 		CafeMemberDTO currentCafeMember = null;
 		
 		if(principal != null) {
-			currentCafeMember = cafeMemberService.get(cafeId, principal.getName());
+			currentCafeMember = cafeMemberService.getIncludingInactive(cafeId, principal.getName());
 		}
 		
 		model.addAttribute("currentCafeMember", currentCafeMember);

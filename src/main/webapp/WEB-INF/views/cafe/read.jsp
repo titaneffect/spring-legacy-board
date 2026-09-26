@@ -253,24 +253,42 @@
 				
 				        </c:when>
 				
-				        <%-- 로그인했지만 아직 가입하지 않은 사용자 --%>
-				        <c:when test="${empty currentCafeMember}">
-				
-				            <form method="post"
-				                  action="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/member/join">
-				
-				                <input type="hidden"
-				                       name="${_csrf.parameterName}"
-				                       value="${_csrf.token}">
-				
-				                <button type="submit"
-				                        class="btn cafe-primary-button w-100">
-				                    카페 가입
-				                </button>
-				
-				            </form>
-				
-				        </c:when>
+				        <%-- 가입 기록이 없거나 탈퇴·거절되어 다시 신청할 수 있는 사용자 --%>
+						<c:when test="${empty currentCafeMember
+						              or currentCafeMember.status eq 'WITHDRAWN'
+						              or currentCafeMember.status eq 'REJECTED'}">
+						              
+						    <form method="post"
+						          action="${pageContext.request.contextPath}/cafe/${cafe.cafeId}/member/join">
+						
+						        <input type="hidden"
+						               name="${_csrf.parameterName}"
+						               value="${_csrf.token}">
+						
+						        <button type="submit"
+						                class="btn cafe-primary-button w-100">
+						            카페 가입 신청
+						        </button>
+						
+						    </form>
+
+						</c:when>
+						
+						<c:when test="${currentCafeMember.status eq 'PENDING'}">
+						    <button type="button"
+						            class="btn btn-secondary w-100"
+						            disabled>
+						        가입 승인 대기 중
+						    </button>
+						</c:when>
+						
+						<c:when test="${currentCafeMember.status eq 'BANNED'}">
+						    <button type="button"
+						            class="btn btn-danger w-100"
+						            disabled>
+						        카페 이용 제한
+						    </button>
+						</c:when>
 				
 				        <%-- 이미 가입한 사용자 --%>
 				        <c:otherwise>

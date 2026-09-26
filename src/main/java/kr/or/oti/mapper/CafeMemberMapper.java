@@ -24,6 +24,14 @@ public interface CafeMemberMapper {
 	CafeMemberVO selectOneAllStatus(@Param("cafeId")Long cafeId,
 			@Param("memberUsername")String memberUsername);
 	
+	// 회원 가입 승인
+	int approve(@Param("cafeId") Long cafeId,
+	            @Param("memberUsername") String memberUsername);
+	
+	// 회원 가입 거절
+	int reject(@Param("cafeId") Long cafeId,
+	           @Param("memberUsername") String memberUsername);
+	
 	// 회원 탈퇴
 	int withdraw(@Param("cafeId")Long cafeId,
 			@Param("memberUsername")String memberUsername);

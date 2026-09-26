@@ -53,14 +53,16 @@
 			CAFE_MEMBER_ID,
 			CAFE_ID,
 			MEMBER_USERNAME,
-			CAFE_ROLE
+			CAFE_ROLE,
+			STATUS
 		)
 		VALUES
 		(
 			SEQ_CAFE_MEMBER.NEXTVAL,
 			#{cafeId},
 			#{memberUsername},
-			#{cafeRole}
+			#{cafeRole},
+			#{status}
 		)
 	</insert>
 	
@@ -90,6 +92,24 @@
 	
 	</select>
 	
+	<update id="approve">
+	    UPDATE CAFE_MEMBER
+	    SET STATUS = 'ACTIVE',
+	        CAFE_ROLE = 'MEMBER',
+	        JOINED_AT = SYSDATE
+	    WHERE CAFE_ID = #{cafeId}
+	      AND MEMBER_USERNAME = #{memberUsername}
+	      AND STATUS = 'PENDING'
+	</update>
+	
+	<update id="reject">
+	    UPDATE CAFE_MEMBER
+	    SET STATUS = 'REJECTED'
+	    WHERE CAFE_ID = #{cafeId}
+	      AND MEMBER_USERNAME = #{memberUsername}
+	      AND STATUS = 'PENDING'
+	</update>
+	
 	<update id="withdraw">
 
 	    UPDATE CAFE_MEMBER
@@ -105,12 +125,12 @@
 
 	    UPDATE CAFE_MEMBER
 	    SET
-	        STATUS = 'ACTIVE',
+	        STATUS = 'PENDING',
 	        CAFE_ROLE = 'MEMBER',
 	        JOINED_AT = SYSDATE
 	    WHERE CAFE_ID = #{cafeId}
 	      AND MEMBER_USERNAME = #{memberUsername}
-	      AND STATUS = 'WITHDRAWN'
+	      AND STATUS IN ('WITHDRAWN', 'REJECTED')
 	
 	</update>
 	
