@@ -1554,3 +1554,26 @@ body {
 .cafe-board-row:hover {
     background-color: #f5faf7;
 }
+
+
+
+.cafe-member-table {
+    table-layout: fixed;
+    min-width: 900px;
+}
+
+.cafe-member-table tbody td {
+    height: 64px;
+    vertical-align: middle;
+}
+
+.cafe-member-table td:last-child {
+    white-space: nowrap;
+}
+
+
+
+.cafe-member-owner-badge {
+    background-color: #7c3aed;
+    color: #fff;
+}
